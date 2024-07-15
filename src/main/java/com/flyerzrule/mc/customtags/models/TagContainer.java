@@ -3,13 +3,13 @@ package com.flyerzrule.mc.customtags.models;
 import java.util.List;
 
 public class TagContainer {
-    private List<JsonTag> tags;
+    private List<Tag> tags;
 
-    public List<JsonTag> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<JsonTag> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 }

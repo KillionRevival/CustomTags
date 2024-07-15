@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flyerzrule.mc.customtags.models.JsonTag;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.models.TagContainer;
 
@@ -39,14 +38,7 @@ public class TagsConfig {
             TagContainer tagContainer = objectMapper.readValue(this.file, TagContainer.class);
 
             if (tagContainer != null && tagContainer.getTags() != null) {
-                List<JsonTag> jsonTags = tagContainer.getTags();
-
-                this.tags = jsonTags.stream().map(ele -> {
-                    Tag tag = new Tag();
-                    tag.fromJsonTag(ele);
-                    return tag;
-                }).collect(Collectors.toList());
-
+                this.tags = tagContainer.getTags();
                 return this.tags;
             } else {
                 plugin.getLogger().severe("Failed to parse tags.json");

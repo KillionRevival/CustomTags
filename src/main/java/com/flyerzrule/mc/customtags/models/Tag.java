@@ -6,18 +6,9 @@ public class Tag {
     private String id;
     private String name;
     private String tag;
-    private Material item;
+    private Material material;
     private String description;
     private boolean obtainable;
-
-    public void fromJsonTag(JsonTag jsonTag) {
-        this.id = jsonTag.getId();
-        this.name = jsonTag.getName();
-        this.tag = jsonTag.getTag();
-        this.item = Material.getMaterial(jsonTag.getItemId().split(":")[1].toUpperCase());
-        this.description = jsonTag.getDescription();
-        this.obtainable = jsonTag.getObtainable();
-    }
 
     public String getId() {
         return this.id;
@@ -32,7 +23,7 @@ public class Tag {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = this.setColors(name);
     }
 
     public String getTag() {
@@ -40,15 +31,19 @@ public class Tag {
     }
 
     public void setTag(String tag) {
-        this.tag = tag;
+        this.tag = this.setColors(tag);
     }
 
-    public Material getItem() {
-        return this.item;
+    public Material getMaterial() {
+        return this.material;
     }
 
-    public void setItem(Material item) {
-        this.item = item;
+    public void setMaterial(String itemId) {
+        this.material = Material.getMaterial(itemId.split(":")[1].toUpperCase());
+    }
+
+    public void setMaterial(Material item) {
+        this.material = item;
     }
 
     public String getDescription() {
@@ -56,7 +51,7 @@ public class Tag {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = this.setColors(description);
     }
 
     public boolean isObtainable() {
@@ -71,4 +66,7 @@ public class Tag {
         this.obtainable = obtainable;
     }
 
+    private String setColors(String input) {
+        return input.replace("&", "§");
+    }
 }
