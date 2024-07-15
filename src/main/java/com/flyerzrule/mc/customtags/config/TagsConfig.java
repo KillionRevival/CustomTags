@@ -6,34 +6,67 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.bukkit.plugin.java.JavaPlugin;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.models.JsonTag;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.models.TagContainer;
 
 public class TagsConfig {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static TagsConfig instance;
 
-    public static List<Tag> parseFile(CustomTags that, File filePath) {
+    private final ObjectMapper objectMapper;
+    private File file;
+
+    private List<Tag> tags;
+    private JavaPlugin plugin;
+
+    private TagsConfig() {
+        this.objectMapper = new ObjectMapper();
+        this.tags = new ArrayList<>();
+    }
+
+    public static TagsConfig getInstance() {
+        if (instance == null) {
+            instance = new TagsConfig();
+        }
+        return instance;
+    }
+
+    public List<Tag> parseFile() {
         try {
-            TagContainer tagContainer = objectMapper.readValue(filePath, TagContainer.class);
+            TagContainer tagContainer = objectMapper.readValue(this.file, TagContainer.class);
 
             if (tagContainer != null && tagContainer.getTags() != null) {
                 List<JsonTag> jsonTags = tagContainer.getTags();
 
-                return jsonTags.stream().map(ele -> {
+                this.tags = jsonTags.stream().map(ele -> {
                     Tag tag = new Tag();
                     tag.fromJsonTag(ele);
                     return tag;
                 }).collect(Collectors.toList());
 
+                return this.tags;
             } else {
-                that.getLogger().severe("Failed to parse tags.json");
+                plugin.getLogger().severe("Failed to parse tags.json");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new ArrayList<Tag>();
+        this.tags = new ArrayList<Tag>();
+        return this.tags;
+    }
+
+    public void setThat(JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public List<Tag> getTags() {
+        return this.tags;
     }
 }

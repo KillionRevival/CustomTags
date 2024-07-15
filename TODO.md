@@ -1,6 +1,4 @@
-- Create a command for hot reloading the tag options
 - Create the database table for storing who has what tag enabled
 - Create the database table for storing who has what tags available to them
 - Add methods that can be called from another plugin. Would allow other plugins to give tags to players
 - Enchant the tag that the player currently has selected
-- Display the tags in the gui

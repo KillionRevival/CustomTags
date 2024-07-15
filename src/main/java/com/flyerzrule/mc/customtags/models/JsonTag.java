@@ -4,7 +4,6 @@ public class JsonTag {
     private String id;
     private String name;
     private String tag;
-    private String tagColor;
     private String itemId;
     private String description;
     private boolean obtainable;
@@ -31,14 +30,6 @@ public class JsonTag {
 
     public void setTag(String tag) {
         this.tag = tag;
-    }
-
-    public String getTagColor() {
-        return this.tagColor;
-    }
-
-    public void setTagColor(String tagColor) {
-        this.tagColor = tagColor;
     }
 
     public String getItemId() {

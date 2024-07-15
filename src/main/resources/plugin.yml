@@ -4,6 +4,9 @@ main: com.flyerzrule.mc.customtags.CustomTags
 api-version: 1.18
 description: A plugin that allows players to select their custom tags
 commands:
-  mytags:
+  tags:
+    description: Show you all of the tags you own. WIth an option of showing all of the available tags
+    usage: /<command> [args]
+  addtag:
     description: Show you all of the tags you own
-    usage: /<command>
+    usage: /<command> [username] [tagId]

@@ -4,7 +4,6 @@
             "id": "June2024PvpWinner",
             "name": "June 2024 #1 PvP Arena",
             "tag": "#1",
-            "tagColor": "black",
             "description": "Came in first place for the June 2024 PvP Arena Leaderboards",
             "itemId": "minecraft:netherite_sword",
             "obtainable": false
@@ -13,7 +12,6 @@
             "id": "prestige2hardcore",
             "name": "Prestige 2 Hardcore",
             "tag": "Hardcore",
-            "tagColor": "red",
             "description": "Completed the Prestige 2 Hardcore Challenge",
             "itemId": "minecraft:wither_skeleton_skull",
             "obtainable": true
