@@ -81,8 +81,4 @@ public class Database {
             System.out.println(e.getMessage());
         }
     }
-
-    private void printQuery(String query) {
-        CustomTags.getPlugin().getLogger().info(query);
-    }
 }

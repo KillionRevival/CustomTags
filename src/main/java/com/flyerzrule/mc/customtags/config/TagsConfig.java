@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.models.Tag;
@@ -52,6 +54,10 @@ public class TagsConfig {
 
     public List<Tag> getTags() {
         return this.tags;
+    }
+
+    public List<String> getTagIds() {
+        return this.tags.stream().map(ele -> ele.getId()).collect(Collectors.toList());
     }
 
     public Tag getTagById(String id) {

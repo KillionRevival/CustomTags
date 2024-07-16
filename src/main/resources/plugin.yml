@@ -6,11 +6,23 @@ description: A plugin that allows players to select their custom tags
 depend: [Vault, Essentials]
 commands:
   tags:
-    description: Show you all of the tags you own.
+    description: Show you all of the tags you own
     usage: /<command>
+  taguser:
+    description: Show the specified user's owned tags
+    usage: /<command> [username]
   tagadd:
     description: Add a tag to a player's account
     usage: /<command> [username] [tagId]
+  tagaddall:
+    description: Add all tags to a player's account
+    usage: /<command> [username]
   tagremove:
-    description: remove a tag fom a player's account
+    description: Remove a tag fom a player's account
     usage: /<command> [username] [tagId]
+  tagremoveall:
+    description: Remove all tags fom a player's account
+    usage: /<command> [username]
+  tagreload:
+    description: Reload the tags.json file
+    usage: /<command>

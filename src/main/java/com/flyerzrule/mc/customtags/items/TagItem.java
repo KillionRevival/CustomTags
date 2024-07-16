@@ -8,25 +8,33 @@ import org.jetbrains.annotations.NotNull;
 
 import com.flyerzrule.mc.customtags.Database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
+import com.google.common.base.Objects;
 
 import xyz.xenondevs.invui.item.ItemProvider;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 import xyz.xenondevs.invui.item.impl.AbstractItem;
 
 public class TagItem extends AbstractItem {
+    private Player sender;
+    private Player player;
     private Tag tag;
     private boolean selected;
     private boolean locked;
     private TagItemManager itemManager;
 
-    public TagItem(TagItemManager itemManager, Tag tag, boolean selected) {
+    public TagItem(TagItemManager itemManager, Player sender, Player player, Tag tag, boolean selected) {
+        this.sender = sender;
+        this.player = player;
         this.itemManager = itemManager;
         this.tag = tag;
         this.selected = selected;
         this.locked = false;
     }
 
-    public TagItem(TagItemManager itemManager, Tag tag, boolean selected, boolean locked) {
+    public TagItem(TagItemManager itemManager, Player sender, Player player, Tag tag, boolean selected,
+            boolean locked) {
+        this.sender = sender;
+        this.player = player;
         this.itemManager = itemManager;
         this.tag = tag;
         this.selected = selected;
@@ -55,10 +63,16 @@ public class TagItem extends AbstractItem {
         TagsDatabase db = TagsDatabase.getInstance();
         if (clickType.isLeftClick() && this.selected && !this.locked) {
             // Tag clicked that was selected and not locked
-            boolean result = db.unselectTagForUser(player.getUniqueId().toString());
+            boolean result = db.unselectTagForUser(this.player.getUniqueId().toString());
             if (result) {
                 this.selected = false;
-                player.sendMessage(String.format("§rYou have unselected the %s§r tag!", this.tag.getTag()));
+
+                if (Objects.equal(this.sender, this.player)) {
+                    this.sender.sendMessage(String.format("§rYou have unselected the %s§r tag!", this.tag.getTag()));
+                } else {
+                    this.sender.sendMessage(String.format("§rYou have unselected the %s§r tag for %s!",
+                            this.tag.getTag(), this.player.getName()));
+                }
                 notifyWindows();
             }
         } else if (clickType.isLeftClick() && !this.selected && !this.locked) {
@@ -66,9 +80,14 @@ public class TagItem extends AbstractItem {
             this.itemManager.unselectAll();
             this.selected = true;
 
-            db.selectTagForUser(player.getUniqueId().toString(), this.tag.getId());
+            db.selectTagForUser(this.player.getUniqueId().toString(), this.tag.getId());
 
-            player.sendMessage(String.format("§rYou selected the %s§r tag!", this.tag.getTag()));
+            if (Objects.equal(this.sender, this.player)) {
+                this.sender.sendMessage(String.format("§rYou selected the %s§r tag!", this.tag.getTag()));
+            } else {
+                this.sender.sendMessage(
+                        String.format("§rYou selected the %s§r tag for %s!", this.tag.getTag(), this.player.getName()));
+            }
             notifyWindows();
         }
     }

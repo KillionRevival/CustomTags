@@ -22,17 +22,19 @@ import xyz.xenondevs.invui.item.impl.SimpleItem;
 import xyz.xenondevs.invui.window.Window;
 
 public class TagsPanel {
+    private final Player sender;
     private final Player player;
 
     private Gui ownedGui;
     private Gui allGui;
     private Window window;
 
-    public TagsPanel(Player player, List<Tag> allTags, List<Tag> ownedTags) {
+    public TagsPanel(Player sender, Player player, List<Tag> allTags, List<Tag> ownedTags) {
         this.player = player;
+        this.sender = sender;
 
         TagsDatabase db = TagsDatabase.getInstance();
-        Tag selectedTag = db.getSelectedForUser(player.getUniqueId().toString());
+        Tag selectedTag = db.getSelectedForUser(this.player.getUniqueId().toString());
         final String selectedTagId = (selectedTag == null) ? "" : selectedTag.getId();
 
         TagItemManager ownedItemManager = new TagItemManager();
@@ -42,7 +44,7 @@ public class TagsPanel {
                     if (!selectedTagId.isEmpty() && ele.getId().equals(selectedTagId)) {
                         selected = true;
                     }
-                    return new TagItem(ownedItemManager, ele, selected);
+                    return new TagItem(ownedItemManager, sender, player, ele, selected);
                 })
                 .collect(Collectors.toList());
         ownedItemManager.setItems(ownedTagItems);
@@ -50,7 +52,7 @@ public class TagsPanel {
 
         TagItemManager allItemManager = new TagItemManager();
         List<TagItem> allTagItems = allTags.stream()
-                .map(ele -> new TagItem(allItemManager, ele, false, true))
+                .map(ele -> new TagItem(allItemManager, sender, player, ele, false, true))
                 .collect(Collectors.toList());
         allItemManager.setItems(allTagItems);
         List<Item> allItems = allTagItems.stream().collect(Collectors.toList());
@@ -89,12 +91,12 @@ public class TagsPanel {
     }
 
     public void openOwned() {
-        this.window = Window.single().setViewer(player).setTitle("Owned Tags").setGui(this.ownedGui).build();
+        this.window = Window.single().setViewer(this.sender).setTitle("Owned Tags").setGui(this.ownedGui).build();
         this.window.open();
     }
 
     public void openAll() {
-        this.window = Window.single().setViewer(player).setTitle("All Tags").setGui(this.allGui).build();
+        this.window = Window.single().setViewer(this.sender).setTitle("All Tags").setGui(this.allGui).build();
         this.window.open();
     }
 }

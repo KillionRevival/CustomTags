@@ -4,8 +4,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
-
 import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.models.Tag;
 

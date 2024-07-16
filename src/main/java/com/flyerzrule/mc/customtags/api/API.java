@@ -51,7 +51,7 @@ public class API {
 
     public static List<String> getAvailableTagIds() {
         TagsConfig tagsConfig = TagsConfig.getInstance();
-        return tagsConfig.getTags().stream().map(ele -> ele.getId()).collect(Collectors.toList());
+        return tagsConfig.getTagIds();
     }
 
     private static String getUUID(Player player) {

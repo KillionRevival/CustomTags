@@ -15,9 +15,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.flyerzrule.mc.customtags.Database.TagsDatabase;
 import com.flyerzrule.mc.customtags.api.API;
 import com.flyerzrule.mc.customtags.api.CustomTagsAPI;
+import com.flyerzrule.mc.customtags.commands.AddAllTagsCommand;
 import com.flyerzrule.mc.customtags.commands.AddTagCommand;
+import com.flyerzrule.mc.customtags.commands.RemoveAllTagsCommand;
 import com.flyerzrule.mc.customtags.commands.RemoveTagCommand;
 import com.flyerzrule.mc.customtags.commands.TagsCommand;
+import com.flyerzrule.mc.customtags.commands.TagsReloadCommand;
+import com.flyerzrule.mc.customtags.commands.TagsUserCommand;
+import com.flyerzrule.mc.customtags.commands.tabcompleters.AddTagTabComplete;
+import com.flyerzrule.mc.customtags.commands.tabcompleters.RemoveTagTabComplete;
+import com.flyerzrule.mc.customtags.commands.tabcompleters.UsersTabComplete;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.listeners.ChatListener;
 
@@ -136,8 +143,24 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
     private void registerCommands() {
         this.getCommand("tags").setExecutor(new TagsCommand());
+
+        this.getCommand("taguser").setExecutor(new TagsUserCommand());
+        this.getCommand("taguser").setTabCompleter(new UsersTabComplete());
+
         this.getCommand("tagadd").setExecutor(new AddTagCommand());
+        this.getCommand("tagadd").setTabCompleter(new AddTagTabComplete());
+
+        this.getCommand("tagaddall").setExecutor(new AddAllTagsCommand());
+        this.getCommand("tagaddall").setTabCompleter(new UsersTabComplete());
+
         this.getCommand("tagremove").setExecutor(new RemoveTagCommand());
+        this.getCommand("tagremove").setTabCompleter(new RemoveTagTabComplete());
+
+        this.getCommand("tagremoveall").setExecutor(new RemoveAllTagsCommand());
+        this.getCommand("tagremoveall").setTabCompleter(new UsersTabComplete());
+
+        this.getCommand("tagreload").setExecutor(new TagsReloadCommand());
+
     }
 
     private void registerListeners() {

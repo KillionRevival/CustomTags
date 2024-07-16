@@ -1,1 +1,2 @@
-- Add autocomplete to commands
+- Setup permissions
+- Remove instances of System.out.println

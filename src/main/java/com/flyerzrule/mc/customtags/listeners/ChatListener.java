@@ -29,6 +29,7 @@ public class ChatListener implements Listener {
     public ChatListener() {
     }
 
+    @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChat(AsyncChatEvent event) {
         Player player = event.getPlayer();
