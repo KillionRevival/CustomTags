@@ -9,14 +9,14 @@ import org.bukkit.entity.Player;
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.Database.TagsDatabase;
 
-public class AddTagCommand implements CommandExecutor {
+public class RemoveTagCommand implements CommandExecutor {
 
-    public AddTagCommand() {
+    public RemoveTagCommand() {
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("addtag")) {
+        if (cmd.getName().equalsIgnoreCase("removetag")) {
             if (args.length == 2) {
                 String username = args[0];
                 String tagId = args[1];
@@ -25,9 +25,9 @@ public class AddTagCommand implements CommandExecutor {
                 if (player != null) {
                     String uuid = player.getUniqueId().toString();
                     TagsDatabase db = TagsDatabase.getInstance();
-                    db.giveUserTag(uuid, tagId);
+                    db.removeUserTag(uuid, tagId);
                     CustomTags.getPlugin().getLogger()
-                            .info(String.format("%s added tag %s to user %s(%s)", sender.getName(), tagId,
+                            .info(String.format("%s removed tag %s from user %s(%s)", sender.getName(), tagId,
                                     player.getName(), uuid));
                     return true;
                 }

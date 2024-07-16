@@ -2,21 +2,16 @@ package com.flyerzrule.mc.customtags.items;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.bukkit.plugin.java.JavaPlugin;
-
+import com.flyerzrule.mc.customtags.CustomTags;
 import xyz.xenondevs.invui.item.Item;
 
 public class TagItemManager {
     private List<TagItem> items;
-    private JavaPlugin plugin;
 
-    public TagItemManager(JavaPlugin plugin) {
-        this.plugin = plugin;
+    public TagItemManager() {
     }
 
-    public TagItemManager(JavaPlugin plugin, List<TagItem> items) {
-        this.plugin = plugin;
+    public TagItemManager(List<TagItem> items) {
         this.items = items;
     }
 
@@ -30,7 +25,7 @@ public class TagItemManager {
         try {
             return items.stream().filter(ele -> ele.isSelected() == true).findFirst().get();
         } catch (Exception e) {
-            plugin.getLogger().warning("No item is selected!");
+            CustomTags.getPlugin().getLogger().warning("No item is selected!");
         }
         return null;
     }

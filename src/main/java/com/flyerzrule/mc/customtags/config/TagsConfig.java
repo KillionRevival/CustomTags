@@ -4,13 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import org.bukkit.plugin.java.JavaPlugin;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.models.TagContainer;
+import com.google.common.base.Objects;
 
 public class TagsConfig {
     private static TagsConfig instance;
@@ -19,7 +17,6 @@ public class TagsConfig {
     private File file;
 
     private List<Tag> tags;
-    private JavaPlugin plugin;
 
     private TagsConfig() {
         this.objectMapper = new ObjectMapper();
@@ -41,7 +38,7 @@ public class TagsConfig {
                 this.tags = tagContainer.getTags();
                 return this.tags;
             } else {
-                plugin.getLogger().severe("Failed to parse tags.json");
+                CustomTags.getPlugin().getLogger().severe("Failed to parse tags.json");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,15 +47,15 @@ public class TagsConfig {
         return this.tags;
     }
 
-    public void setThat(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
-
     public void setFile(File file) {
         this.file = file;
     }
 
     public List<Tag> getTags() {
         return this.tags;
+    }
+
+    public Tag getTagById(String id) {
+        return this.tags.stream().filter(ele -> Objects.equal(ele.getId(), id)).findFirst().get();
     }
 }
