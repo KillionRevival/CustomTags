@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.customtags.Database;
+package com.flyerzrule.mc.customtags.database;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;

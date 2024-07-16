@@ -10,8 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.Database.TagsDatabase;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
+import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.utils.Utils;
 

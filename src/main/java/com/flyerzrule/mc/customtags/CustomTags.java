@@ -12,7 +12,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.flyerzrule.mc.customtags.Database.TagsDatabase;
 import com.flyerzrule.mc.customtags.api.API;
 import com.flyerzrule.mc.customtags.api.CustomTagsAPI;
 import com.flyerzrule.mc.customtags.commands.AddAllTagsCommand;
@@ -26,6 +25,7 @@ import com.flyerzrule.mc.customtags.commands.tabcompleters.AddTagTabComplete;
 import com.flyerzrule.mc.customtags.commands.tabcompleters.RemoveTagTabComplete;
 import com.flyerzrule.mc.customtags.commands.tabcompleters.UsersTabComplete;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
+import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.listeners.ChatListener;
 
 import net.luckperms.api.LuckPerms;

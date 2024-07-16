@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import com.flyerzrule.mc.customtags.Database.TagsDatabase;
+import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.items.ScrollDownItem;
 import com.flyerzrule.mc.customtags.items.ScrollUpItem;
 import com.flyerzrule.mc.customtags.items.TagItem;

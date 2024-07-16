@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.bukkit.entity.Player;
 
-import com.flyerzrule.mc.customtags.Database.TagsDatabase;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
+import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
 
 public class API {

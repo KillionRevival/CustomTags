@@ -10,7 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.Database.TagsDatabase;
+import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
