@@ -1,2 +1,1 @@
 - Add autocomplete to commands
-- Reduce size of jar
