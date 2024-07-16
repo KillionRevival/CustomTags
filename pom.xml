@@ -109,12 +109,6 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <minimizeJar>false</minimizeJar>
                             <outputFile>${project.build.directory}/${project.artifactId}-${project.version}.jar</outputFile>
-                            <relocations>
-                                <relocation>
-                                    <pattern>xyz.xenondevs.invui</pattern>
-                                    <shadedPattern>com.flyerzrule.mc.custom_guis.shaded.invui</shadedPattern>
-                                </relocation>
-                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
