@@ -84,19 +84,19 @@ public class TagsPanel {
                 .addIngredient('d', new ScrollDownItem())
                 .addIngredient('o',
                         new SimpleItem(new ItemBuilder(Material.EMERALD)
-                                .setDisplayName("View Owned Tags"),
+                                .setDisplayName("View Your Tags"),
                                 event -> openOwned()))
                 .setContent(allItems)
                 .build();
     }
 
     public void openOwned() {
-        this.window = Window.single().setViewer(this.sender).setTitle("Owned Tags").setGui(this.ownedGui).build();
+        this.window = Window.single().setViewer(this.sender).setTitle("§2Your Tags§r").setGui(this.ownedGui).build();
         this.window.open();
     }
 
     public void openAll() {
-        this.window = Window.single().setViewer(this.sender).setTitle("All Tags").setGui(this.allGui).build();
+        this.window = Window.single().setViewer(this.sender).setTitle("§eAll Tags§r").setGui(this.allGui).build();
         this.window.open();
     }
 }
