@@ -4,12 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.flyerzrule.mc.customtags.Database.TagsDatabase;
+import com.flyerzrule.mc.customtags.api.API;
+import com.flyerzrule.mc.customtags.api.CustomTagsAPI;
 import com.flyerzrule.mc.customtags.commands.AddTagCommand;
 import com.flyerzrule.mc.customtags.commands.RemoveTagCommand;
 import com.flyerzrule.mc.customtags.commands.TagsCommand;
@@ -23,7 +28,7 @@ import net.milkbowl.vault.permission.Permission;
 import xyz.xenondevs.invui.gui.structure.Structure;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
-public class CustomTags extends JavaPlugin {
+public class CustomTags extends JavaPlugin implements CustomTagsAPI {
     private File configFile = new File(getDataFolder(), "tags.json");
     private static Permission perms = null;
     private static Chat chat = null;
@@ -49,6 +54,7 @@ public class CustomTags extends JavaPlugin {
         registerGlobalIngredients();
         registerCommands();
         registerListeners();
+        registerAPI();
 
         getLogger().info("CustomTags has been enabled!");
     }
@@ -136,5 +142,42 @@ public class CustomTags extends JavaPlugin {
 
     private void registerListeners() {
         this.getServer().getPluginManager().registerEvents(new ChatListener(), this);
+    }
+
+    private void registerAPI() {
+        this.getServer().getServicesManager().register(CustomTagsAPI.class, this, this, ServicePriority.Normal);
+    }
+
+    // API Methods
+    public boolean giveUserTag(Player player, String tagId) {
+        return API.giveUserTag(player, tagId);
+    }
+
+    public boolean removeUserTag(Player player, String tagId) {
+        return API.removeUserTag(player, tagId);
+    }
+
+    public boolean removeAllUserTags(Player player) {
+        return API.removeAllUserTags(player);
+    }
+
+    public List<String> getUserTagIds(Player player) {
+        return API.getUserTagIds(player);
+    }
+
+    public boolean setUserSelectedTag(Player player, String tagId) {
+        return API.setUserSelectedTag(player, tagId);
+    }
+
+    public boolean removeUserSelectedTag(Player player) {
+        return API.removeUserSelectedTag(player);
+    }
+
+    public String getUserSelectedTagId(Player player) {
+        return API.getUserSelectedTagId(player);
+    }
+
+    public List<String> getAvailableTagIds() {
+        return API.getAvailableTagIds();
     }
 }

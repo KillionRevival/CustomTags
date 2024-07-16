@@ -1,2 +1,2 @@
-- Add methods that can be called from another plugin. Would allow other plugins to give tags to players
 - Add autocomplete to commands
+- Reduce size of jar
