@@ -30,9 +30,6 @@ public class ChatListener implements Listener {
         Player player = event.getPlayer();
         String prefix = CustomTags.getChat().getPlayerPrefix(player);
 
-        System.out.println(player.getDisplayName());
-        System.out.println(MiniMessage.miniMessage().serialize(event.message()));
-
         TagsDatabase db = TagsDatabase.getInstance();
         CustomTags.getPlugin().getLogger().info(player.getUniqueId().toString());
         Tag selectedTag = db.getSelectedForUser(player.getUniqueId().toString());
@@ -48,12 +45,15 @@ public class ChatListener implements Listener {
 
             // Create the prefix component
             TextComponent prefixComponent = new TextComponent(prefix.replace('&', '§'));
-            System.out.println(player.displayName().toString());
-            TextComponent usernameComponent = new TextComponent(
-                    GsonComponentSerializer.gson().serialize(player.displayName()));
+            prefixComponent.setHoverEvent(null);
+
+            // Create the username component
+            TextComponent usernameComponent = new TextComponent(player.getName());
+            usernameComponent.setHoverEvent(null);
 
             // Create the message component
             TextComponent messageComponent = new TextComponent(MiniMessage.miniMessage().serialize(event.message()));
+            messageComponent.setHoverEvent(null);
 
             // Combine prefix, hoverable tag, and message
             BaseComponent[] baseComponents = new ComponentBuilder("")
@@ -62,7 +62,7 @@ public class ChatListener implements Listener {
                     .append(hoverComponent)
                     .append(" ")
                     .append(usernameComponent)
-                    .append(" ")
+                    .append("§8: §r")
                     .append(messageComponent)
                     .create();
 

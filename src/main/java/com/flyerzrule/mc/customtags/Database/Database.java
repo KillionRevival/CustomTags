@@ -62,7 +62,6 @@ public class Database {
             PreparedStatement pstmt = this.connection.prepareStatement(query);
             for (int i = 0; i < params.length; i++) {
                 pstmt.setObject(i + 1, params[i]);
-                System.out.println("Setting parameter " + (i + 1) + " to " + params[i]);
             }
             rs = pstmt.executeQuery();
             System.out.println("Fetch executed successfully.");

@@ -63,7 +63,6 @@ public class TagsDatabase extends Database {
         try {
             while (rs != null && rs.next()) {
                 String tagId = rs.getString("tagId");
-                System.out.println(tagId);
                 tags.add(tagsConfig.getTagById(tagId));
             }
         } catch (Exception e) {
@@ -144,7 +143,6 @@ public class TagsDatabase extends Database {
         try {
             if (rs != null && rs.next()) {
                 String tagId = rs.getString("tagId");
-                System.out.println(tagId);
                 return tagsConfig.getTagById(tagId);
             }
         } catch (Exception e) {
