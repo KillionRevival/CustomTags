@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+
 import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.models.Tag;
 
@@ -23,19 +25,37 @@ public class TagsDatabase extends Database {
         return TagsDatabase.instance;
     }
 
-    private void createOwnedTagsTable() {
+    private boolean createOwnedTagsTable() {
         String query = "CREATE TABLE IF NOT EXISTS ownedTags (userId TEXT, tagId TEXT, PRIMARY KEY (userId, tagId));";
-        this.executeQuery(query);
+        try {
+            this.executeQuery(query);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    private void createSelectedTagsTable() {
+    private boolean createSelectedTagsTable() {
         String query = "CREATE TABLE IF NOT EXISTS selectedTags (userId TEXT PRIMARY KEY, tagId TEXT);";
-        this.executeQuery(query);
+        try {
+            this.executeQuery(query);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public List<Tag> getUserOwnedTags(String userId) {
         String query = "SELECT tagId FROM ownedTags WHERE userId = ?;";
-        ResultSet rs = this.fetchQuery(query, userId);
+        ResultSet rs;
+        try {
+            rs = this.fetchQuery(query, userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
 
         TagsConfig tagsConfig = TagsConfig.getInstance();
 
@@ -43,43 +63,81 @@ public class TagsDatabase extends Database {
         try {
             while (rs != null && rs.next()) {
                 String tagId = rs.getString("tagId");
+                System.out.println(tagId);
                 tags.add(tagsConfig.getTagById(tagId));
             }
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Error getting tagId");
         }
         return tags;
     }
 
-    public void giveUserTag(String userId, String tagId) {
+    public boolean giveUserTag(String userId, String tagId) {
         String query = "INSERT INTO ownedTags (userId, tagId) VALUES (?, ?);";
-        this.executeUpdate(query, userId, tagId);
+        try {
+            this.executeUpdate(query, userId, tagId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    public void removeUserTag(String userId, String tagId) {
+    public boolean removeUserTag(String userId, String tagId) {
         String query = "DELETE FROM ownedTags WHERE userId = ? AND tagId = ?;";
-        this.executeUpdate(query, userId, tagId);
+        try {
+            this.executeUpdate(query, userId, tagId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    public void removeAllTagsForUser(String userId) {
+    public boolean removeAllTagsForUser(String userId) {
         String query = "DELETE FROM ownedTags WHERE userId = ?;";
-        this.executeUpdate(query, userId);
+        try {
+            this.executeUpdate(query, userId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    public void selectTagForUser(String userId, String tagId) {
+    public boolean selectTagForUser(String userId, String tagId) {
         String query = "INSERT INTO selectedTags (userId, tagId) VALUES (?, ?) ON CONFLICT(userId) DO UPDATE SET tagId = excluded.tagId;";
-        this.executeUpdate(query, userId, tagId);
+        try {
+            this.executeUpdate(query, userId, tagId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    public void unselectTagForUser(String userId) {
+    public boolean unselectTagForUser(String userId) {
         String query = "DELETE FROM selectedTags WHERE userId = ?;";
-        this.executeUpdate(query, userId);
+        try {
+            this.executeUpdate(query, userId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public Tag getSelectedForUser(String userId) {
         String query = "SELECT tagId FROM selectedTags WHERE userId = ?;";
 
-        ResultSet rs = this.fetchQuery(query, userId);
+        ResultSet rs;
+        try {
+            rs = this.fetchQuery(query, userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
         TagsConfig tagsConfig = TagsConfig.getInstance();
 

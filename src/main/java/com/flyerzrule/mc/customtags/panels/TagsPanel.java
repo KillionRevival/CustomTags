@@ -32,7 +32,7 @@ public class TagsPanel {
                 this.player = player;
 
                 TagItemManager ownedItemManager = new TagItemManager();
-                List<TagItem> ownedTagItems = allTags.stream()
+                List<TagItem> ownedTagItems = ownedTags.stream()
                                 .map(ele -> new TagItem(ownedItemManager, ele, false))
                                 .collect(Collectors.toList());
                 ownedItemManager.setItems(ownedTagItems);

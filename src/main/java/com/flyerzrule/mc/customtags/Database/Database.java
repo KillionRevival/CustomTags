@@ -31,17 +31,19 @@ public class Database {
         return conn;
     }
 
-    protected void executeQuery(String query) {
-        try (Statement stmt = this.connection.createStatement()) {
+    protected void executeQuery(String query) throws Exception {
+        try {
+            Statement stmt = this.connection.createStatement();
             stmt.execute(query);
             System.out.println("Query executed successfully.");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new Exception("executeQuery failed!");
         }
     }
 
-    public void executeUpdate(String query, Object... params) {
-        try (PreparedStatement pstmt = this.connection.prepareStatement(query)) {
+    public void executeUpdate(String query, Object... params) throws Exception {
+        try {
+            PreparedStatement pstmt = this.connection.prepareStatement(query);
             if (params != null && params.length > 0) {
                 for (int i = 0; i < params.length; i++) {
                     pstmt.setObject(i + 1, params[i]);
@@ -50,22 +52,22 @@ public class Database {
             pstmt.executeUpdate();
             System.out.println("Update executed successfully.");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new Exception("executeUpdate failed!");
         }
     }
 
-    protected ResultSet fetchQuery(String query, Object... params) {
+    protected ResultSet fetchQuery(String query, Object... params) throws Exception {
         ResultSet rs = null;
-        System.out.println(params[0]);
-        try (PreparedStatement pstmt = this.connection.prepareStatement(query)) {
-            if (params != null && params.length > 0) {
-                for (int i = 0; i < params.length; i++) {
-                    pstmt.setObject(i + 1, params[i]);
-                }
+        try {
+            PreparedStatement pstmt = this.connection.prepareStatement(query);
+            for (int i = 0; i < params.length; i++) {
+                pstmt.setObject(i + 1, params[i]);
+                System.out.println("Setting parameter " + (i + 1) + " to " + params[i]);
             }
             rs = pstmt.executeQuery();
+            System.out.println("Fetch executed successfully.");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new Exception("fetchQuery failed!");
         }
         return rs;
     }
