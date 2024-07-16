@@ -16,6 +16,8 @@ import com.flyerzrule.mc.customtags.commands.TagsCommand;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.listeners.ChatListener;
 
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import xyz.xenondevs.invui.gui.structure.Structure;
@@ -26,6 +28,7 @@ public class CustomTags extends JavaPlugin {
     private static Permission perms = null;
     private static Chat chat = null;
     private static JavaPlugin plugin = null;
+    private static LuckPerms luckPerms = LuckPermsProvider.get();
 
     @Override
     public void onEnable() {
@@ -69,6 +72,10 @@ public class CustomTags extends JavaPlugin {
 
     public static Permission getPermission() {
         return perms;
+    }
+
+    public static LuckPerms getLuckPerms() {
+        return luckPerms;
     }
 
     private boolean setupPermissions() {

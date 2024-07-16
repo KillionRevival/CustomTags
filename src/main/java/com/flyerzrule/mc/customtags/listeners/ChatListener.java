@@ -1,5 +1,8 @@
 package com.flyerzrule.mc.customtags.listeners;
 
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,9 +14,10 @@ import com.flyerzrule.mc.customtags.Database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
+import net.luckperms.api.node.types.MetaNode;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -25,10 +29,21 @@ public class ChatListener implements Listener {
     public ChatListener() {
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChat(AsyncChatEvent event) {
         Player player = event.getPlayer();
         String prefix = CustomTags.getChat().getPlayerPrefix(player);
+
+        // Get Premium name color
+        String premiumColor = "";
+        CompletableFuture<User> userFuture = CustomTags.getLuckPerms().getUserManager().loadUser(player.getUniqueId());
+        User user = userFuture.join();
+        Optional<Node> metaOptional = user.getNodes().stream()
+                .filter(node -> node instanceof MetaNode).findFirst();
+        if (metaOptional.isPresent()) {
+            MetaNode metaNode = (MetaNode) metaOptional.get();
+            premiumColor = metaNode.getKey().replace("meta.username-color.", "").replace('&', '§');
+        }
 
         TagsDatabase db = TagsDatabase.getInstance();
         CustomTags.getPlugin().getLogger().info(player.getUniqueId().toString());
@@ -48,7 +63,7 @@ public class ChatListener implements Listener {
             prefixComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
             // Create the username component
-            TextComponent usernameComponent = new TextComponent(player.getName());
+            TextComponent usernameComponent = new TextComponent(premiumColor + player.getName() + "§r");
             usernameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
             // Create the message component
