@@ -45,15 +45,15 @@ public class ChatListener implements Listener {
 
             // Create the prefix component
             TextComponent prefixComponent = new TextComponent(prefix.replace('&', '§'));
-            prefixComponent.setHoverEvent(null);
+            prefixComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
             // Create the username component
             TextComponent usernameComponent = new TextComponent(player.getName());
-            usernameComponent.setHoverEvent(null);
+            usernameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
             // Create the message component
             TextComponent messageComponent = new TextComponent(MiniMessage.miniMessage().serialize(event.message()));
-            messageComponent.setHoverEvent(null);
+            messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
             // Combine prefix, hoverable tag, and message
             BaseComponent[] baseComponents = new ComponentBuilder("")
