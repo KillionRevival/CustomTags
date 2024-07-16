@@ -16,7 +16,7 @@ public class AddTagCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("addtag")) {
+        if (cmd.getName().equalsIgnoreCase("tagadd")) {
             if (args.length == 2) {
                 String username = args[0];
                 String tagId = args[1];
@@ -25,11 +25,16 @@ public class AddTagCommand implements CommandExecutor {
                 if (player != null) {
                     String uuid = player.getUniqueId().toString();
                     TagsDatabase db = TagsDatabase.getInstance();
-                    db.giveUserTag(uuid, tagId);
-                    CustomTags.getPlugin().getLogger()
-                            .info(String.format("%s added tag %s to user %s(%s)", sender.getName(), tagId,
-                                    player.getName(), uuid));
-                    return true;
+                    boolean result = db.giveUserTag(uuid, tagId);
+                    if (result) {
+                        CustomTags.getPlugin().getLogger()
+                                .info(String.format("%s added tag %s to user %s(%s)", sender.getName(), tagId,
+                                        player.getName(), uuid));
+                        sender.sendMessage(String.format("Added tag %s to user %s!", tagId, player.getName()));
+                    } else {
+                        sender.sendMessage(String.format("Error adding tag %s to user %s!", tagId, player.getName()));
+                    }
+                    return result;
                 }
             }
         }

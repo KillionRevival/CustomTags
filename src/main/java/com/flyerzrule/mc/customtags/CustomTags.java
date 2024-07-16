@@ -130,8 +130,8 @@ public class CustomTags extends JavaPlugin {
 
     private void registerCommands() {
         this.getCommand("tags").setExecutor(new TagsCommand());
-        this.getCommand("addtag").setExecutor(new AddTagCommand());
-        this.getCommand("removetag").setExecutor(new RemoveTagCommand());
+        this.getCommand("tagadd").setExecutor(new AddTagCommand());
+        this.getCommand("tagremove").setExecutor(new RemoveTagCommand());
     }
 
     private void registerListeners() {

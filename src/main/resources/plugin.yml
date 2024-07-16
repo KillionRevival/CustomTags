@@ -8,9 +8,9 @@ commands:
   tags:
     description: Show you all of the tags you own.
     usage: /<command>
-  addtag:
+  tagadd:
     description: Add a tag to a player's account
     usage: /<command> [username] [tagId]
-  removetag:
+  tagremove:
     description: remove a tag fom a player's account
     usage: /<command> [username] [tagId]

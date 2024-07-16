@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.models.TagContainer;
-import com.google.common.base.Objects;
 
 public class TagsConfig {
     private static TagsConfig instance;
@@ -56,6 +55,6 @@ public class TagsConfig {
     }
 
     public Tag getTagById(String id) {
-        return this.tags.stream().filter(ele -> Objects.equal(ele.getId(), id)).findFirst().get();
+        return this.tags.stream().filter(ele -> ele.getId().equals(id)).findFirst().get();
     }
 }

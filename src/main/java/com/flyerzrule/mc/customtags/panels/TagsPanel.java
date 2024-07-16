@@ -12,7 +12,6 @@ import com.flyerzrule.mc.customtags.items.ScrollUpItem;
 import com.flyerzrule.mc.customtags.items.TagItem;
 import com.flyerzrule.mc.customtags.items.TagItemManager;
 import com.flyerzrule.mc.customtags.models.Tag;
-import com.google.common.base.Objects;
 
 import xyz.xenondevs.invui.gui.Gui;
 import xyz.xenondevs.invui.gui.ScrollGui;
@@ -40,7 +39,7 @@ public class TagsPanel {
         List<TagItem> ownedTagItems = ownedTags.stream()
                 .map(ele -> {
                     boolean selected = false;
-                    if (!selectedTagId.isEmpty() && Objects.equal(ele.getId(), selectedTagId)) {
+                    if (!selectedTagId.isEmpty() && ele.getId().equals(selectedTagId)) {
                         selected = true;
                     }
                     return new TagItem(ownedItemManager, ele, selected);

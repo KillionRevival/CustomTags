@@ -6,7 +6,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.Database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
 
@@ -53,21 +52,23 @@ public class TagItem extends AbstractItem {
 
     @Override
     public void handleClick(@NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent event) {
-        if (clickType.isLeftClick() && !this.selected && !this.locked) {
+        TagsDatabase db = TagsDatabase.getInstance();
+        if (clickType.isLeftClick() && this.selected && !this.locked) {
+            // Tag clicked that was selected and not locked
+            boolean result = db.unselectTagForUser(player.getUniqueId().toString());
+            if (result) {
+                this.selected = false;
+                player.sendMessage(String.format("§rYou have unselected the %s§r tag!", this.tag.getTag()));
+                notifyWindows();
+            }
+        } else if (clickType.isLeftClick() && !this.selected && !this.locked) {
+            // Tag clicked that was unselected and not locked
             this.itemManager.unselectAll();
             this.selected = true;
 
-            TagsDatabase db = TagsDatabase.getInstance();
-            // Tag oldTag = db.getSelectedForUser(player.getUniqueId().toString());
-            // String oldTagTag = "";
-            // if (oldTag != null) {
-            // oldTagTag = oldTag.getTag();
-            // }
-
             db.selectTagForUser(player.getUniqueId().toString(), this.tag.getId());
 
-            // CustomTags.setPlayerPrefix(player, oldTagTag, this.tag.getTag());
-            player.sendMessage(String.format("§fYou selected the %s§f tag!", this.tag.getTag()));
+            player.sendMessage(String.format("§rYou selected the %s§r tag!", this.tag.getTag()));
             notifyWindows();
         }
     }

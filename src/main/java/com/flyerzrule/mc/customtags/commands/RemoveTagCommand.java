@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.Database.TagsDatabase;
+import com.flyerzrule.mc.customtags.models.Tag;
 
 public class RemoveTagCommand implements CommandExecutor {
 
@@ -16,7 +17,7 @@ public class RemoveTagCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("removetag")) {
+        if (cmd.getName().equalsIgnoreCase("tagremove")) {
             if (args.length == 2) {
                 String username = args[0];
                 String tagId = args[1];
@@ -25,11 +26,26 @@ public class RemoveTagCommand implements CommandExecutor {
                 if (player != null) {
                     String uuid = player.getUniqueId().toString();
                     TagsDatabase db = TagsDatabase.getInstance();
-                    db.removeUserTag(uuid, tagId);
-                    CustomTags.getPlugin().getLogger()
-                            .info(String.format("%s removed tag %s from user %s(%s)", sender.getName(), tagId,
-                                    player.getName(), uuid));
-                    return true;
+                    boolean result = db.removeUserTag(uuid, tagId);
+
+                    // If the removed tag was selected, unselect it
+                    Tag currentSelected = db.getSelectedForUser(uuid);
+                    if (currentSelected != null) {
+                        if (currentSelected.getId().equals(tagId)) {
+                            db.unselectTagForUser(uuid);
+                        }
+                    }
+
+                    if (result) {
+                        CustomTags.getPlugin().getLogger()
+                                .info(String.format("%s removed tag %s from user %s(%s)", sender.getName(), tagId,
+                                        player.getName(), uuid));
+                        sender.sendMessage(String.format("Removed tag %s from user %s!", tagId, player.getName()));
+                    } else {
+                        sender.sendMessage(
+                                String.format("Error removing tag %s from user %s!", tagId, player.getName()));
+                    }
+                    return result;
                 }
             }
         }
