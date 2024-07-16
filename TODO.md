@@ -1,2 +1,1 @@
 - Setup permissions
-- Remove instances of System.out.println
