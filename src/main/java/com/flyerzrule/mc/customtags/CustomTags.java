@@ -136,7 +136,8 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
                     getLogger().severe("Default tags.json not found in resources!");
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                getLogger().severe("Error creating tags.json file!");
+                // e.printStackTrace();
             }
         }
     }

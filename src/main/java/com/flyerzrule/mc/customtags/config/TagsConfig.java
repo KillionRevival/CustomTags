@@ -42,7 +42,8 @@ public class TagsConfig {
                 CustomTags.getPlugin().getLogger().severe("Failed to parse tags.json");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            CustomTags.getPlugin().getLogger().severe("Failed to parse tags.json");
+            // e.printStackTrace();
         }
         this.tags = new ArrayList<Tag>();
         return this.tags;

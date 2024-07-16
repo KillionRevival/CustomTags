@@ -24,9 +24,9 @@ public class Database {
 
             String url = "jdbc:sqlite:" + dbFile.getAbsolutePath();
             conn = DriverManager.getConnection(url);
-            System.out.println("Connected to the database.");
+            CustomTags.getPlugin().getLogger().info("Connected to the database");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            // System.out.println(e.getMessage());
         }
         return conn;
     }
@@ -35,7 +35,7 @@ public class Database {
         try {
             Statement stmt = this.connection.createStatement();
             stmt.execute(query);
-            System.out.println("Query executed successfully.");
+            // System.out.println("Query executed successfully.");
         } catch (SQLException e) {
             throw new Exception("executeQuery failed!");
         }
@@ -50,7 +50,7 @@ public class Database {
                 }
             }
             pstmt.executeUpdate();
-            System.out.println("Update executed successfully.");
+            // System.out.println("Update executed successfully.");
         } catch (SQLException e) {
             throw new Exception("executeUpdate failed!");
         }
@@ -64,7 +64,7 @@ public class Database {
                 pstmt.setObject(i + 1, params[i]);
             }
             rs = pstmt.executeQuery();
-            System.out.println("Fetch executed successfully.");
+            // System.out.println("Fetch executed successfully.");
         } catch (SQLException e) {
             throw new Exception("fetchQuery failed!");
         }
@@ -75,10 +75,10 @@ public class Database {
         try {
             if (this.connection != null) {
                 this.connection.close();
-                System.out.println("Connection closed.");
+                CustomTags.getPlugin().getLogger().info("Database Connection closed");
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            // System.out.println(e.getMessage());
         }
     }
 }

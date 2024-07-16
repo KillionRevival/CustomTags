@@ -29,7 +29,7 @@ public class TagsDatabase extends Database {
             this.executeQuery(query);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
         return false;
     }
@@ -40,7 +40,7 @@ public class TagsDatabase extends Database {
             this.executeQuery(query);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
         return false;
     }
@@ -51,7 +51,7 @@ public class TagsDatabase extends Database {
         try {
             rs = this.fetchQuery(query, userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             return new ArrayList<>();
         }
 
@@ -64,8 +64,8 @@ public class TagsDatabase extends Database {
                 tags.add(tagsConfig.getTagById(tagId));
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error getting tagId");
+            // e.printStackTrace();
+            // System.out.println("Error getting tagId");
         }
         return tags;
     }
@@ -76,7 +76,7 @@ public class TagsDatabase extends Database {
             this.executeUpdate(query, userId, tagId);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
         return false;
     }
@@ -87,7 +87,7 @@ public class TagsDatabase extends Database {
             this.executeUpdate(query, userId, tagId);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
         return false;
     }
@@ -98,7 +98,7 @@ public class TagsDatabase extends Database {
             this.executeUpdate(query, userId);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
         return false;
     }
@@ -109,7 +109,7 @@ public class TagsDatabase extends Database {
             this.executeUpdate(query, userId, tagId);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
         return false;
     }
@@ -120,7 +120,7 @@ public class TagsDatabase extends Database {
             this.executeUpdate(query, userId);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
         return false;
     }
@@ -132,7 +132,7 @@ public class TagsDatabase extends Database {
         try {
             rs = this.fetchQuery(query, userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             return null;
         }
 
@@ -144,7 +144,7 @@ public class TagsDatabase extends Database {
                 return tagsConfig.getTagById(tagId);
             }
         } catch (Exception e) {
-            System.out.println("Error getting tagId");
+            // System.out.println("Error getting tagId");
         }
         return null;
     }
