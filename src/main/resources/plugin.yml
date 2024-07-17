@@ -8,21 +8,42 @@ commands:
   tags:
     description: Show you all of the tags you own
     usage: /<command>
+    permission: customtags.view
+    permission-message: You do not have permission to use this command.
   taguser:
     description: Show the specified user's owned tags
     usage: /<command> [username]
+    permission: customtags.manage
+    permission-message: You do not have permission to use this command.
   tagadd:
     description: Add a tag to a player's account
     usage: /<command> [username] [tagId]
+    permission: customtags.manage
+    permission-message: You do not have permission to use this command.
   tagaddall:
     description: Add all tags to a player's account
     usage: /<command> [username]
+    permission: customtags.manage
+    permission-message: You do not have permission to use this command.
   tagremove:
     description: Remove a tag fom a player's account
     usage: /<command> [username] [tagId]
+    permission: customtags.manage
+    permission-message: You do not have permission to use this command.
   tagremoveall:
     description: Remove all tags fom a player's account
     usage: /<command> [username]
+    permission: customtags.manage
+    permission-message: You do not have permission to use this command.
   tagreload:
     description: Reload the tags.json file
     usage: /<command>
+    permission: customtags.manage
+    permission-message: You do not have permission to use this command.
+permissions:
+  customtags.view:
+    description: Allows the player to view and set their tag
+    default: true
+  customtags.manage:
+    description: Allows the player to add and remove tags from people. As well as set the tag for a user
+    default: op
