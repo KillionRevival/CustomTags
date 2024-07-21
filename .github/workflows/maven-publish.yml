@@ -35,7 +35,7 @@ jobs:
       - name: Upload Release Asset
         run: |
           cd ${{github.workspace}}/target
-          gh release upload ${{github.event.release.tag_name}} feedmd-win-x64.zip        
+          gh release upload ${{github.event.release.tag_name}} CustomTags-${{ github.event.release.tag_name }}.jar
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         shell: bash
