@@ -1,5 +1,5 @@
 name: CustomTags
-version: 1.0.1
+version: 1.1
 main: com.flyerzrule.mc.customtags.CustomTags
 api-version: 1.18
 description: A plugin that allows players to select their custom tags
