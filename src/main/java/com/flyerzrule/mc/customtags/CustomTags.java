@@ -40,7 +40,7 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
     private static Permission perms = null;
     private static Chat chat = null;
     private static JavaPlugin plugin = null;
-    private static LuckPerms luckPerms = LuckPermsProvider.get();
+    private static LuckPerms luckPerms;
 
     @Override
     public void onEnable() {
@@ -56,6 +56,7 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
         TagsDatabase.getInstance();
 
         setupPermissions();
+        luckPerms = LuckPermsProvider.get();
         setupChat();
 
         registerGlobalIngredients();
