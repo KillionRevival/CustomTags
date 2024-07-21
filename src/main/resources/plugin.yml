@@ -3,7 +3,7 @@ version: 1.0
 main: com.flyerzrule.mc.customtags.CustomTags
 api-version: 1.18
 description: A plugin that allows players to select their custom tags
-depend: [Vault, Essentials]
+depend: [Vault, Essentials, LuckPerms]
 commands:
   tags:
     description: Show you all of the tags you own

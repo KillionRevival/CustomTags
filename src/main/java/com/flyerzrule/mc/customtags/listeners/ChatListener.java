@@ -43,7 +43,7 @@ public class ChatListener implements Listener {
                 .filter(node -> node instanceof MetaNode).findFirst();
         if (metaOptional.isPresent()) {
             MetaNode metaNode = (MetaNode) metaOptional.get();
-            premiumColor = metaNode.getKey().replace("meta.username-color.", "").replace('&', '§');
+            premiumColor = metaNode.getKey().replace("meta.username-color.", "").replace('&', '\u00A7');
         }
 
         TagsDatabase db = TagsDatabase.getInstance();
@@ -53,23 +53,23 @@ public class ChatListener implements Listener {
         if (selectedTag != null) {
             // Create hover text component
             String hoverContent = String.format("%s\n%s\n%s", selectedTag.getName(), selectedTag.getDescription(),
-                    (selectedTag.getObtainable() == true) ? "§aObtainable" : "§4Not-Obtainable");
+                    (selectedTag.getObtainable()) ? "\u00A7aObtainable" : "\u00A74Not-Obtainable");
 
             TextComponent hoverComponent = new TextComponent(selectedTag.getTag());
             hoverComponent
                     .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hoverContent)));
 
             // Create the prefix component
-            TextComponent prefixComponent = new TextComponent(prefix.replace('&', '§'));
-            prefixComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
+            TextComponent prefixComponent = new TextComponent(prefix.replace('&', '\u00A7'));
+            prefixComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("\u00A7r")));
 
             // Create the username component
-            TextComponent usernameComponent = new TextComponent(premiumColor + player.getName() + "§r");
-            usernameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
+            TextComponent usernameComponent = new TextComponent(premiumColor + player.getName() + "\u00A7r");
+            usernameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("\u00A7r")));
 
             // Create the message component
             TextComponent messageComponent = new TextComponent(MiniMessage.miniMessage().serialize(event.message()));
-            messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
+            messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("\u00A7r")));
 
             // Combine prefix, hoverable tag, and message
             BaseComponent[] baseComponents = new ComponentBuilder("")
@@ -78,7 +78,7 @@ public class ChatListener implements Listener {
                     .append(hoverComponent)
                     .append(" ")
                     .append(usernameComponent)
-                    .append("§8: §r")
+                    .append("\u00A78: \u00A7r")
                     .append(messageComponent)
                     .create();
 
