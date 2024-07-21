@@ -4,7 +4,7 @@
 
     <groupId>com.flyerzrule.mc.customtags</groupId>
     <artifactId>CustomTags</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>CustomTags</name>
