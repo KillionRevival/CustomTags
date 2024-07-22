@@ -21,7 +21,7 @@ jobs:
 
       - name: Upload Release Asset
         id: release
-        uses: KillionRevival/maven-release-action@v1
+        uses: KillionRevival/release-action@v1
         with:
           jar-path: ${{ steps.build.outputs.jar-path }}
         
