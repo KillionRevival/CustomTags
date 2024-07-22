@@ -31,14 +31,6 @@ public class GroupListener {
 
             User user = (User) event.getTarget();
             Player player = Bukkit.getPlayer(user.getUniqueId());
-            InheritanceNode node = (InheritanceNode) event.getNode();
-            CustomTags.getPlugin().getLogger()
-                    .info(event.getTarget().getFriendlyName() + " was added to group " + node.getGroupName());
-            // Group parentGroup = event.getTarget().getInheritedGroups(event.getTarget().getQueryOptions()).stream()
-            //         .findFirst().get();
-
-            // String parentGroupPrefix = parentGroup.data().toCollection().stream().filter(NodeType.PREFIX::matches)
-            //         .map(NodeType.PREFIX::cast).findFirst().get().getMetaValue();
 
             PrefixUtils.removePrefix(player);
 
