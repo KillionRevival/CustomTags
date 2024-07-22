@@ -168,7 +168,6 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
     private void registerListeners() {
         this.getServer().getPluginManager().registerEvents(new ChatListener(), this);
-        // new PrefixListener();
         new GroupListener();
     }
 
