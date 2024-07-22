@@ -2,6 +2,8 @@ package com.flyerzrule.mc.customtags.listeners;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,6 +14,7 @@ import org.bukkit.event.Listener;
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
+import com.flyerzrule.mc.customtags.utils.PrefixUtils;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -33,7 +36,7 @@ public class ChatListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChat(AsyncChatEvent event) {
         Player player = event.getPlayer();
-        String prefix = CustomTags.getChat().getPlayerPrefix(player);
+        String prefix = PrefixUtils.removeTagFromPrefix(player);
 
         // Get Premium name color
         String premiumColor = "";
@@ -43,11 +46,17 @@ public class ChatListener implements Listener {
                 .filter(node -> node instanceof MetaNode).findFirst();
         if (metaOptional.isPresent()) {
             MetaNode metaNode = (MetaNode) metaOptional.get();
-            premiumColor = metaNode.getKey().replace("meta.username-color.", "").replace('&', '§');
+            Pattern premiumColorRegex = Pattern.compile("meta\\.username-color\\.(&\\S)");
+            String metadata = metaNode.getKey();
+
+            Matcher match = premiumColorRegex.matcher(metadata);
+
+            if (match.find()) {
+                premiumColor = match.group(1).replace('&', '§');
+            }
         }
 
         TagsDatabase db = TagsDatabase.getInstance();
-        CustomTags.getPlugin().getLogger().info(player.getUniqueId().toString());
         Tag selectedTag = db.getSelectedForUser(player.getUniqueId().toString());
 
         if (selectedTag != null) {
