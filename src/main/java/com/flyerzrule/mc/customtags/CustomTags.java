@@ -27,6 +27,7 @@ import com.flyerzrule.mc.customtags.commands.tabcompleters.UsersTabComplete;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.listeners.ChatListener;
+import com.flyerzrule.mc.customtags.listeners.GroupListener;
 
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -37,9 +38,9 @@ import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
 public class CustomTags extends JavaPlugin implements CustomTagsAPI {
     private File configFile = new File(getDataFolder(), "tags.json");
+    private static JavaPlugin plugin = null;
     private static Permission perms = null;
     private static Chat chat = null;
-    private static JavaPlugin plugin = null;
     private static LuckPerms luckPerms;
 
     @Override
@@ -167,6 +168,7 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
     private void registerListeners() {
         this.getServer().getPluginManager().registerEvents(new ChatListener(), this);
+        new GroupListener();
     }
 
     private void registerAPI() {

@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
+import com.flyerzrule.mc.customtags.utils.PrefixUtils;
 import com.google.common.base.Objects;
 
 import xyz.xenondevs.invui.item.ItemProvider;
@@ -67,6 +68,8 @@ public class TagItem extends AbstractItem {
             if (result) {
                 this.selected = false;
 
+                PrefixUtils.removePrefix(this.player);
+
                 if (Objects.equal(this.sender, this.player)) {
                     this.sender.sendMessage(String.format("§rYou have unselected the %s§r tag!", this.tag.getTag()));
                 } else {
@@ -81,6 +84,7 @@ public class TagItem extends AbstractItem {
             this.selected = true;
 
             db.selectTagForUser(this.player.getUniqueId().toString(), this.tag.getId());
+            PrefixUtils.selectPrefix(this.player, this.tag.getTag());
 
             if (Objects.equal(this.sender, this.player)) {
                 this.sender.sendMessage(String.format("§rYou selected the %s§r tag!", this.tag.getTag()));
