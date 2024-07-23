@@ -24,4 +24,8 @@ jobs:
         uses: KillionRevival/release-action@v1
         with:
           jar-path: ${{ steps.build.outputs.jar-path }}
+
+      - name: Deploy to package repo
+        id: deploy
+        uses: KillionRevival/maven-deploy-action@v1
         
