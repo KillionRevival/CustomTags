@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
   build:
@@ -28,6 +29,4 @@ jobs:
       - name: Deploy to package repo
         id: deploy
         uses: KillionRevival/maven-deploy-action@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
         
