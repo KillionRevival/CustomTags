@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -72,7 +73,11 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
     public void onDisable() {
         TagsDatabase db = TagsDatabase.getInstance();
         if (db != null) {
-            db.closeConnection();
+            try {
+                db.closeConnection();
+            } catch (Exception e) {
+                getLogger().log(Level.SEVERE, "Failed to close connection to Database!");
+            }
         }
         getLogger().info("CustomTags has been disabled!");
     }
