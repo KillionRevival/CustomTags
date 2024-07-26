@@ -12,6 +12,13 @@ repositories {
     gradlePluginPortal()
     mavenCentral()
     maven {
+        url "https://maven.pkg.github.com/KillionRevival/KillionCommons"
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
+    maven {
         name 'papermc-repo'
         url 'https://papermc.io/repo/repository/maven-public/'
     }
@@ -22,20 +29,13 @@ repositories {
     maven { 
         url 'https://jitpack.io' 
     }
-    maven {
-        url = "https://maven.pkg.github.com/KillionRevival/*"
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
 }
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
+    compileOnly 'co.killionrevival:killioncommons:1.1.0'
     implementation 'xyz.xenondevs.invui:invui:1.33'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
-    implementation 'co.killionrevival:killioncommons:1.1.0'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
     compileOnly 'net.md-5:bungeecord-chat:1.20-R0.2'
     compileOnly 'net.luckperms:api:5.4'
