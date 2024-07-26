@@ -23,7 +23,7 @@ repositories {
         url 'https://jitpack.io' 
     }
     maven {
-        url "https://maven.pkg.github.com/KillionRevival/KillionCommons"
+        url = "https://maven.pkg.github.com/KillionRevival/KillionCommons"
         credentials {
             username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
             password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
