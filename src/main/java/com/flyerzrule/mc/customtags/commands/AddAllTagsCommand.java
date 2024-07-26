@@ -45,8 +45,8 @@ public class AddAllTagsCommand implements CommandExecutor {
                     }
 
                     if (result) {
-                        CustomTags.getPlugin().getLogger()
-                                .info(String.format("%s added all tags to user %s(%s)", sender.getName(),
+                        CustomTags.getMyLogger()
+                                .sendInfo(String.format("%s added all tags to user %s(%s)", sender.getName(),
                                         player.getName(), uuid));
                         sender.sendMessage(String.format("Added all tags to user %s!", player.getName()));
                     } else {

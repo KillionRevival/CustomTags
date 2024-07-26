@@ -13,7 +13,7 @@ public class TagsReloadCommand implements CommandExecutor {
         if (cmd.getName().equalsIgnoreCase("tagreload")) {
             TagsConfig tagsConfig = TagsConfig.getInstance();
 
-            CustomTags.getPlugin().getLogger().info(String.format("Player: %s triggered a reload!",
+            CustomTags.getMyLogger().sendInfo(String.format("Player: %s triggered a reload!",
                     sender.getName()));
             sender.sendMessage("Triggered a reload!");
             tagsConfig.parseFile();

@@ -37,8 +37,8 @@ public class RemoveTagCommand implements CommandExecutor {
                     }
 
                     if (result) {
-                        CustomTags.getPlugin().getLogger()
-                                .info(String.format("%s removed tag %s from user %s(%s)", sender.getName(), tagId,
+                        CustomTags.getMyLogger()
+                                .sendInfo(String.format("%s removed tag %s from user %s(%s)", sender.getName(), tagId,
                                         player.getName(), uuid));
                         sender.sendMessage(String.format("Removed tag %s from user %s!", tagId, player.getName()));
                     } else {

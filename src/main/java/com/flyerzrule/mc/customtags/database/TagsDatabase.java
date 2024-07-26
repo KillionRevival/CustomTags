@@ -7,13 +7,14 @@ import java.util.List;
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.models.Tag;
-import com.flyerzrule.mc.database.DatabaseConnection;
+
+import co.killionrevival.killioncommons.database.DatabaseConnection;
 
 public class TagsDatabase extends DatabaseConnection {
     private static TagsDatabase instance;
 
     private TagsDatabase() {
-        super(CustomTags.getPlugin().getLogger());
+        super(CustomTags.getApi().getConsoleUtil());
         createSchema();
         createOwnedTagsTable();
         createSelectedTagsTable();
@@ -32,7 +33,7 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeQuery(query);
             return true;
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return false;
     }
@@ -43,7 +44,7 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeQuery(query);
             return true;
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return false;
     }
@@ -54,7 +55,7 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeQuery(query);
             return true;
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return false;
     }
@@ -65,7 +66,7 @@ public class TagsDatabase extends DatabaseConnection {
         try {
             rs = this.fetchQuery(query, userId);
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
             return new ArrayList<>();
         }
 
@@ -78,8 +79,8 @@ public class TagsDatabase extends DatabaseConnection {
                 tags.add(tagsConfig.getTagById(tagId));
             }
         } catch (Exception e) {
-            // e.printStackTrace();
-            // System.out.println("Error getting tagId");
+            e.printStackTrace();
+            System.out.println("Error getting tagId");
         }
         return tags;
     }
@@ -90,7 +91,7 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeUpdate(query, userId, tagId);
             return true;
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return false;
     }
@@ -101,7 +102,7 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeUpdate(query, userId, tagId);
             return true;
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return false;
     }
@@ -112,7 +113,7 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeUpdate(query, userId);
             return true;
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return false;
     }
@@ -123,7 +124,7 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeUpdate(query, userId, tagId);
             return true;
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return false;
     }
@@ -134,7 +135,7 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeUpdate(query, userId);
             return true;
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return false;
     }
@@ -146,7 +147,7 @@ public class TagsDatabase extends DatabaseConnection {
         try {
             rs = this.fetchQuery(query, userId);
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
             return null;
         }
 
@@ -158,7 +159,8 @@ public class TagsDatabase extends DatabaseConnection {
                 return tagsConfig.getTagById(tagId);
             }
         } catch (Exception e) {
-            // System.out.println("Error getting tagId");
+            e.printStackTrace();
+            System.out.println("Error getting tagId");
         }
         return null;
     }
