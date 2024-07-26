@@ -23,6 +23,9 @@ public class RemoveAllTagsCommand implements CommandExecutor {
                 Player player = Bukkit.getPlayer(username);
 
                 if (player != null) {
+                    CustomTags.getMyLogger().sendDebug(
+                            sender.getName() + " sent command " + cmd.getName() + " for player " + player.getName());
+
                     String uuid = player.getUniqueId().toString();
                     TagsDatabase db = TagsDatabase.getInstance();
                     boolean result = db.removeAllTagsForUser(uuid);

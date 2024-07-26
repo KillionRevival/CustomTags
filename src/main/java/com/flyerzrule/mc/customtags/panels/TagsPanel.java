@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.items.ScrollDownItem;
 import com.flyerzrule.mc.customtags.items.ScrollUpItem;
@@ -91,11 +92,13 @@ public class TagsPanel {
     }
 
     public void openOwned() {
+        CustomTags.getMyLogger().sendDebug("Opening owned panel for user " + this.sender.getName());
         this.window = Window.single().setViewer(this.sender).setTitle("§2Your Tags§r").setGui(this.ownedGui).build();
         this.window.open();
     }
 
     public void openAll() {
+        CustomTags.getMyLogger().sendDebug("Opening all panel for user " + this.sender.getName());
         this.window = Window.single().setViewer(this.sender).setTitle("§eAll Tags§r").setGui(this.allGui).build();
         this.window.open();
     }

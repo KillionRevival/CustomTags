@@ -161,7 +161,7 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
                 }
             } catch (IOException e) {
                 logger.sendError("Error creating tags.json file!");
-                // e.printStackTrace();
+                logger.sendError(e.getMessage());
             }
         }
     }

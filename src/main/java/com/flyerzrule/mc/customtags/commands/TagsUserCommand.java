@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
@@ -29,6 +30,9 @@ public class TagsUserCommand implements CommandExecutor {
                 Player player = Bukkit.getPlayer(args[0]);
 
                 if (player != null) {
+                    CustomTags.getMyLogger().sendDebug(
+                            sender.getName() + " sent command " + cmd.getName() + " for player " + player.getName());
+
                     List<Tag> tags = tagsConfig.getTags();
 
                     TagsDatabase db = TagsDatabase.getInstance();

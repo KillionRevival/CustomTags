@@ -19,12 +19,14 @@ public class PrefixUtils {
         String serverPrefix = removeTagFromPrefix(player);
         String newPrefix = serverPrefix + " " + newTag + "§r";
 
+        CustomTags.getMyLogger().sendDebug("Setting " + player.getName() + "'s prefix to " + newPrefix);
         chat.setPlayerPrefix(null, player, newPrefix);
     }
 
     public static void removePrefix(Player player) {
         User user = CustomTags.getLuckPerms().getUserManager().getUser(player.getUniqueId());
         if (user != null) {
+            CustomTags.getMyLogger().sendDebug("Removing " + player.getName() + "'s prefix");
             user.data().clear(node -> node.getType() == NodeType.PREFIX);
             CustomTags.getLuckPerms().getUserManager().saveUser(user);
         }
