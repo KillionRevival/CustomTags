@@ -23,6 +23,9 @@ public class RemoveAllTagsCommand implements CommandExecutor {
                 Player player = Bukkit.getPlayer(username);
 
                 if (player != null) {
+                    CustomTags.getMyLogger().sendDebug(
+                            sender.getName() + " sent command " + cmd.getName() + " for player " + player.getName());
+
                     String uuid = player.getUniqueId().toString();
                     TagsDatabase db = TagsDatabase.getInstance();
                     boolean result = db.removeAllTagsForUser(uuid);
@@ -34,8 +37,8 @@ public class RemoveAllTagsCommand implements CommandExecutor {
                     }
 
                     if (result) {
-                        CustomTags.getPlugin().getLogger()
-                                .info(String.format("%s removed all tags from user %s(%s)", sender.getName(),
+                        CustomTags.getMyLogger()
+                                .sendInfo(String.format("%s removed all tags from user %s(%s)", sender.getName(),
                                         player.getName(), uuid));
                         sender.sendMessage(String.format("Removed all tags from user %s!", player.getName()));
                     } else {

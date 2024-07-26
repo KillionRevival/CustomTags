@@ -6,6 +6,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
+import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.utils.PrefixUtils;
@@ -65,6 +66,8 @@ public class TagItem extends AbstractItem {
         if (clickType.isLeftClick() && this.selected && !this.locked) {
             // Tag clicked that was selected and not locked
             boolean result = db.unselectTagForUser(this.player.getUniqueId().toString());
+            CustomTags.getMyLogger().sendDebug(this.sender.getName() + " unselected tag " + this.tag.getId()
+                    + " for user " + this.player.getName());
             if (result) {
                 this.selected = false;
 
@@ -80,6 +83,9 @@ public class TagItem extends AbstractItem {
             }
         } else if (clickType.isLeftClick() && !this.selected && !this.locked) {
             // Tag clicked that was unselected and not locked
+
+            CustomTags.getMyLogger().sendDebug(this.sender.getName() + " selected tag " + this.tag.getId()
+                    + " for user " + this.player.getName());
             this.itemManager.unselectAll();
             this.selected = true;
 

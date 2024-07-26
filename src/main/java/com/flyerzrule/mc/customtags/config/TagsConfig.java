@@ -39,11 +39,11 @@ public class TagsConfig {
                 this.tags = tagContainer.getTags();
                 return this.tags;
             } else {
-                CustomTags.getPlugin().getLogger().severe("Failed to parse tags.json");
+                CustomTags.getMyLogger().sendError("Failed to parse tags.json");
             }
         } catch (IOException e) {
-            CustomTags.getPlugin().getLogger().severe("Failed to parse tags.json");
-            // e.printStackTrace();
+            CustomTags.getMyLogger().sendError("Failed to parse tags.json");
+            CustomTags.getMyLogger().sendError(e.getMessage());
         }
         this.tags = new ArrayList<Tag>();
         return this.tags;

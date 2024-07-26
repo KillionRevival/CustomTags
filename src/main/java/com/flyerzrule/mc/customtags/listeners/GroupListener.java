@@ -32,6 +32,8 @@ public class GroupListener {
             User user = (User) event.getTarget();
             Player player = Bukkit.getPlayer(user.getUniqueId());
 
+            CustomTags.getMyLogger().sendDebug("Group changed for " + player.getName());
+
             PrefixUtils.removePrefix(player);
 
             TagsDatabase db = TagsDatabase.getInstance();

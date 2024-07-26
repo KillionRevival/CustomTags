@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,6 +30,8 @@ import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.listeners.ChatListener;
 import com.flyerzrule.mc.customtags.listeners.GroupListener;
 
+import co.killionrevival.killioncommons.KillionCommonsApi;
+import co.killionrevival.killioncommons.util.ConsoleUtil;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.milkbowl.vault.chat.Chat;
@@ -42,13 +45,20 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
     private static Permission perms = null;
     private static Chat chat = null;
     private static LuckPerms luckPerms;
+    private static KillionCommonsApi api;
+    private static ConsoleUtil logger;
 
     @Override
     public void onEnable() {
         plugin = this;
 
+        api = new KillionCommonsApi(plugin);
+        logger = api.getConsoleUtil();
+
         ensureDataFolderExists();
         ensureTagsConfigExists();
+
+        saveDefaultConfig();
 
         TagsConfig tagConfig = TagsConfig.getInstance();
         tagConfig.setFile(configFile);
@@ -65,16 +75,20 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
         registerListeners();
         registerAPI();
 
-        getLogger().info("CustomTags has been enabled!");
+        logger.sendInfo("CustomTags has been enabled!");
     }
 
     @Override
     public void onDisable() {
         TagsDatabase db = TagsDatabase.getInstance();
         if (db != null) {
-            db.closeConnection();
+            try {
+                db.closeConnection();
+            } catch (Exception e) {
+                logger.sendError("Failed to close connection to Database!");
+            }
         }
-        getLogger().info("CustomTags has been disabled!");
+        logger.sendInfo("CustomTags has been disabled!");
     }
 
     public static JavaPlugin getPlugin() {
@@ -91,6 +105,14 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
     public static LuckPerms getLuckPerms() {
         return luckPerms;
+    }
+
+    public static KillionCommonsApi getApi() {
+        return api;
+    }
+
+    public static ConsoleUtil getMyLogger() {
+        return logger;
     }
 
     private boolean setupPermissions() {
@@ -135,11 +157,11 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
                 if (in != null) {
                     Files.copy(in, configFile.toPath());
                 } else {
-                    getLogger().severe("Default tags.json not found in resources!");
+                    logger.sendError("Default tags.json not found in resources!");
                 }
             } catch (IOException e) {
-                getLogger().severe("Error creating tags.json file!");
-                // e.printStackTrace();
+                logger.sendError("Error creating tags.json file!");
+                logger.sendError(e.getMessage());
             }
         }
     }

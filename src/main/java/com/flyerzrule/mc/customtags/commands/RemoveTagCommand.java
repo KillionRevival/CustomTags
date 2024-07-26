@@ -24,6 +24,10 @@ public class RemoveTagCommand implements CommandExecutor {
                 Player player = Bukkit.getPlayer(username);
 
                 if (player != null) {
+                    CustomTags.getMyLogger().sendDebug(
+                            sender.getName() + " sent command " + cmd.getName() + " for player " + player.getName()
+                                    + " and tag " + tagId);
+
                     String uuid = player.getUniqueId().toString();
                     TagsDatabase db = TagsDatabase.getInstance();
                     boolean result = db.removeUserTag(uuid, tagId);
@@ -37,8 +41,8 @@ public class RemoveTagCommand implements CommandExecutor {
                     }
 
                     if (result) {
-                        CustomTags.getPlugin().getLogger()
-                                .info(String.format("%s removed tag %s from user %s(%s)", sender.getName(), tagId,
+                        CustomTags.getMyLogger()
+                                .sendInfo(String.format("%s removed tag %s from user %s(%s)", sender.getName(), tagId,
                                         player.getName(), uuid));
                         sender.sendMessage(String.format("Removed tag %s from user %s!", tagId, player.getName()));
                     } else {
