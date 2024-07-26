@@ -102,4 +102,8 @@ public class TagsPanel {
         this.window = Window.single().setViewer(this.sender).setTitle("§eAll Tags§r").setGui(this.allGui).build();
         this.window.open();
     }
+
+    public void close() {
+        this.window.close();
+    }
 }
