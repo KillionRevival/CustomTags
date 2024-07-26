@@ -12,13 +12,6 @@ repositories {
     gradlePluginPortal()
     mavenCentral()
     maven {
-        url "https://maven.pkg.github.com/KillionRevival/KillionCommons"
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
-    maven {
         name 'papermc-repo'
         url 'https://papermc.io/repo/repository/maven-public/'
     }
@@ -28,6 +21,13 @@ repositories {
     }
     maven { 
         url 'https://jitpack.io' 
+    }
+    maven {
+        url "https://maven.pkg.github.com/KillionRevival/*"
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
     }
 }
 
