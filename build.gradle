@@ -24,10 +24,10 @@ repositories {
     }
     maven {
         url = "https://maven.pkg.github.com/KillionRevival/*"
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-        }
+        // credentials {
+        //     username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+        //     password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        // }
     }
 }
 
