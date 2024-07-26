@@ -30,7 +30,7 @@ jobs:
         run: bash gradlew assemble
         shell: bash
         env:
-          GITHUB_ACTOR: ${{ github.GITHUB_ACTOR }}
+          GITHUB_ACTOR: "strenkml"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
 
