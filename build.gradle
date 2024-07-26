@@ -26,7 +26,7 @@ repositories {
         url "https://maven.pkg.github.com/KillionRevival/*"
         credentials {
             username = "strenkml"
-            password = ""
+            password = ${{ secrets.GITHUB_TOKEN }}
         }
     }
 }
