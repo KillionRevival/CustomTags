@@ -1,10 +1,11 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'com.flyerzrule.mc.customtags'
-version = '1.4'
+version = '1.4.1'
 def javaVersion = JavaVersion.VERSION_17
 def encoding = 'UTF-8'
 
@@ -34,8 +35,8 @@ repositories {
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
     compileOnly 'co.killionrevival:killioncommons:1.1.0-SNAPSHOT'
-    implementation 'xyz.xenondevs.invui:invui:1.33'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+    shadow 'xyz.xenondevs.invui:invui:1.33'
+    shadow 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
     compileOnly 'net.md-5:bungeecord-chat:1.20-R0.2'
     compileOnly 'net.luckperms:api:5.4'
@@ -56,6 +57,14 @@ tasks.processResources {
     }
 }
 
+tasks.assemble {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.build {
+    dependsOn(tasks.shadowJar)
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -73,5 +82,12 @@ publishing {
             }
         }
     }
+}
+
+shadowJar {
+  configurations = [project.configurations.shadow]
+  archiveBaseName.set(project.name)
+  archiveVersion.set(project.version)
+  archiveClassifier.set('')
 }
 
