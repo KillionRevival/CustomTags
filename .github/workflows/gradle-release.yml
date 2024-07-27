@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4.1.7
 
       - name: Build with Gradle
-        uses: Killion-Revival/gradle-builder-action@v1
+        uses: KillionRevival/gradle-builder-action@v1
         id: build-step
 
       
