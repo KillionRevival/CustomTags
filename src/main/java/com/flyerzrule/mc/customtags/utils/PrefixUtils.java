@@ -3,10 +3,13 @@ package com.flyerzrule.mc.customtags.utils;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
+import com.flyerzrule.mc.customtags.database.TagsDatabase;
+import com.flyerzrule.mc.customtags.models.Tag;
 
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.NodeType;
@@ -42,5 +45,20 @@ public class PrefixUtils {
             prefix = prefix.replace(tag + "§r", "");
         }
         return prefix.trim().replace("§r", "");
+    }
+
+    public static void removeAndSetPrefix(Player player) {
+        removePrefix(player);
+
+        TagsDatabase db = TagsDatabase.getInstance();
+        Tag selectedTag = db.getSelectedForUser(player.getUniqueId().toString());
+        if (selectedTag != null) {
+            selectPrefix(player, selectedTag.getTag());
+        }
+    }
+
+    public static void removeAndSetPrefix(String playerId) {
+        Player player = Bukkit.getPlayer(playerId);
+        removeAndSetPrefix(player);
     }
 }
