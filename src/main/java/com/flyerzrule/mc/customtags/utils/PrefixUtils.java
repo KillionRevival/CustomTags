@@ -1,9 +1,9 @@
 package com.flyerzrule.mc.customtags.utils;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
@@ -58,7 +58,13 @@ public class PrefixUtils {
     }
 
     public static void removeAndSetPrefix(String playerId) {
-        Player player = Bukkit.getPlayer(playerId);
+        Player player = CustomTags.getPlugin().getServer().getPlayer(UUID.fromString(playerId));
+        if (player != null) {
+            CustomTags.getMyLogger().sendDebug(player.getName());
+        } else {
+            CustomTags.getMyLogger().sendError("PLAYER NULL");
+        }
+
         removeAndSetPrefix(player);
     }
 }
