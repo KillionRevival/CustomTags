@@ -4,8 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
-import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.utils.PrefixUtils;
 
 import net.luckperms.api.event.EventBus;
@@ -34,14 +32,7 @@ public class GroupListener {
 
             CustomTags.getMyLogger().sendDebug("Group changed for " + player.getName());
 
-            PrefixUtils.removePrefix(player);
-
-            TagsDatabase db = TagsDatabase.getInstance();
-            Tag selectedTag = db.getSelectedForUser(player.getUniqueId().toString());
-            if (selectedTag != null) {
-                PrefixUtils.selectPrefix(player, selectedTag.getTag());
-            }
-
+            PrefixUtils.removeAndSetPrefix(player);
         }
     }
 }

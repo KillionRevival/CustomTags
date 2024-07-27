@@ -7,6 +7,7 @@ import java.util.List;
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.models.Tag;
+import com.flyerzrule.mc.customtags.utils.PrefixUtils;
 
 import co.killionrevival.killioncommons.database.DatabaseConnection;
 
@@ -133,6 +134,7 @@ public class TagsDatabase extends DatabaseConnection {
         String query = "DELETE FROM custom_tags.selected_tags WHERE userid = ?;";
         try {
             this.executeUpdate(query, userId);
+            PrefixUtils.removeAndSetPrefix(userId);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
