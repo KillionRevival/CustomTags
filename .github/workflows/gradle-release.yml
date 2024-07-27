@@ -21,8 +21,8 @@ jobs:
         uses: KillionRevival/gradle-builder-action@v1
         id: build-step
         with:
-          app_id: ${{ vars.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          username: ${{ github.actor }}
+          token: ${{ secrets.PAT }}
 
       
         
