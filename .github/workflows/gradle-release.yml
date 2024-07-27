@@ -24,17 +24,13 @@ jobs:
           username: ${{ github.actor }}
           token: ${{ secrets.PAT }}
 
-      
-        
-          
+      - name: Upload Release Asset
+        id: release
+        uses: KillionRevival/release-action@v1
+        with:
+          jar-path: ${{ steps.build.outputs.jar-path }}
 
-      # - name: Upload Release Asset
-      #   id: release
-      #   uses: KillionRevival/release-action@v1
-      #   with:
-      #     jar-path: ${{ steps.build.outputs.jar-path }}
-
-      # - name: Deploy to package repo
-      #   id: deploy
-      #   uses: KillionRevival/gradle-deploy-action@v1
+      - name: Deploy to package repo
+        id: deploy
+        uses: KillionRevival/gradle-deploy-action@v1
         
