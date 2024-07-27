@@ -20,7 +20,6 @@ jobs:
         uses: KillionRevival/gradle-builder-action@v1
         id: build-step
         with:
-          username: ${{ github.actor }}
           token: ${{ secrets.PAT }}
 
       - name: Upload Release Asset
