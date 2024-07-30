@@ -7,6 +7,8 @@ import java.util.List;
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.models.Tag;
+import com.flyerzrule.mc.customtags.models.TagUpdateMethod;
+import com.flyerzrule.mc.customtags.models.TagUpdateType;
 import com.flyerzrule.mc.customtags.utils.PrefixUtils;
 
 import co.killionrevival.killioncommons.database.DatabaseConnection;
@@ -19,6 +21,8 @@ public class TagsDatabase extends DatabaseConnection {
         createSchema();
         createOwnedTagsTable();
         createSelectedTagsTable();
+        createTagsTable();
+        createUpdateHistoryTable();
     }
 
     public static TagsDatabase getInstance() {
@@ -39,6 +43,14 @@ public class TagsDatabase extends DatabaseConnection {
         return false;
     }
 
+    private boolean createUpdateTypeEnum() {
+        return this.createEnumIfNotExists("custom_tags", "update_type", new String[] { "CREATE", "MODIFY", "DELETE" });
+    }
+
+    private boolean createUpdateMethodEnum() {
+        return this.createEnumIfNotExists("custom_tags", "update_method", new String[] { "COMMAND", "PLUGIN" });
+    }
+
     private boolean createOwnedTagsTable() {
         String query = "CREATE TABLE IF NOT EXISTS custom_tags.owned_tags (userid TEXT, tagid TEXT, PRIMARY KEY (userid, tagid));";
         try {
@@ -52,6 +64,30 @@ public class TagsDatabase extends DatabaseConnection {
 
     private boolean createSelectedTagsTable() {
         String query = "CREATE TABLE IF NOT EXISTS custom_tags.selected_tags (userid TEXT PRIMARY KEY, tagid TEXT);";
+        try {
+            this.executeQuery(query);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean createTagsTable() {
+        String query = "CREATE TABLE IF NO EXISTS custom_tags.tags (tagId TEXT PRIMARY KEY, name TEXT, tag TEXT, description TEXT, material TEXT, obtainable BOOLEAN, added_date TIMESTAMPTZ DEFAULT NOW())";
+        try {
+            this.executeQuery(query);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean createUpdateHistoryTable() {
+        this.createUpdateTypeEnum();
+        this.createUpdateMethodEnum();
+        String query = "CREATE TABLE IF NO EXISTS custom_tags.update_history (updateId SERIAL PRIMARY KEY, type update_type, tagId TEXT, date TIMESTAMPTZ DEFAULT NOW(), method update_method, actor TEXT)";
         try {
             this.executeQuery(query);
             return true;
@@ -165,5 +201,27 @@ public class TagsDatabase extends DatabaseConnection {
             System.out.println("Error getting tagId");
         }
         return null;
+    }
+
+    public boolean createTag(Tag newTag, TagUpdateMethod updateMethod, String actor) {
+        String tagsQuery = "INSERT INTO custom_tags.tags (tagId, name, tag, description, material, obtainable) VALUES (?, ?, ?, ?, ?, ?);";
+        try {
+            this.executeUpdate(tagsQuery, newTag.getId(), newTag.getName(), newTag.getTag(), newTag.getDescription(),
+                    newTag.getMaterial().name(), newTag.getObtainable());
+        } catch (Exception e) {
+            e.printStackTrace();
+            CustomTags.getMyLogger().sendError("ERROR Creating tag " + newTag.getId());
+            return false;
+        }
+
+        String updateQuery = "INSERT INTO custom_tags.update_history (type, tagId, method, actor) VALUES (?, ?, ?, ?);";
+        try {
+            this.executeUpdate(updateQuery, "CREATE", newTag.getId(), updateMethod.toString(), actor);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            CustomTags.getMyLogger().sendError("ERROR Creating history entry for tag " + newTag.getId());
+        }
+        return false;
     }
 }

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
+import com.flyerzrule.mc.customtags.models.Tag;
+
 public interface CustomTagsAPI {
     boolean giveUserTag(Player player, String tagId);
 
@@ -20,4 +22,8 @@ public interface CustomTagsAPI {
     String getUserSelectedTagId(Player player);
 
     List<String> getAvailableTagIds();
+
+    boolean createTag(String pluginIdentifier, Tag newTag);
+
+    boolean deleteTag(String pluginIdentifier, String tagId);
 }
