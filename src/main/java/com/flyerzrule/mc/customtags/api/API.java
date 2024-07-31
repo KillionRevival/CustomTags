@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
+import com.flyerzrule.mc.customtags.models.TagUpdateMethod;
 import com.flyerzrule.mc.customtags.utils.PrefixUtils;
 
 public class API {
@@ -68,6 +69,28 @@ public class API {
     public static List<String> getAvailableTagIds() {
         TagsConfig tagsConfig = TagsConfig.getInstance();
         return tagsConfig.getTagIds();
+    }
+
+    public static boolean createTag(String pluginIdentifier, Tag newTag) {
+        TagsDatabase db = TagsDatabase.getInstance();
+        return db.createTag(newTag, TagUpdateMethod.PLUGIN, pluginIdentifier);
+    }
+
+    public static boolean deleteTag(String pluginIdentifier, String tagId) {
+        TagsDatabase db = TagsDatabase.getInstance();
+        return db.deleteTag(tagId, TagUpdateMethod.PLUGIN, pluginIdentifier);
+    }
+
+    public static boolean modifyTag(String pluginIdentifier, Tag newTag) {
+        TagsDatabase db = TagsDatabase.getInstance();
+        return db.modifyTag(newTag, TagUpdateMethod.PLUGIN, pluginIdentifier);
+    }
+
+    public static boolean ensureTag(String pluginIdentifier, Tag newTag) {
+        TagsDatabase db = TagsDatabase.getInstance();
+        if (!db.tagExists(newTag.getId())) {
+            return db.createTag(newTag, TagUpdateMethod.PLUGIN, pluginIdentifier);
+        }
     }
 
     private static String getUUID(Player player) {

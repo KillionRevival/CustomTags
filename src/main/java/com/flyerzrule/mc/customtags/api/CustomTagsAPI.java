@@ -26,4 +26,12 @@ public interface CustomTagsAPI {
     boolean createTag(String pluginIdentifier, Tag newTag);
 
     boolean deleteTag(String pluginIdentifier, String tagId);
+
+    boolean modifyTag(String pluginIdentifier, Tag newTag);
+
+    boolean ensureTag(String pluginIdentifier, Tag newTag);
+
+    boolean tagExists(String tagId);
+
+    Tag getTag(String tagId);
 }
