@@ -69,7 +69,7 @@ public class ChatListener implements Listener {
                     .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hoverContent)));
 
             // Create the prefix component
-            TextComponent prefixComponent = new TextComponent(prefix.replace('&', '§'));
+            TextComponent prefixComponent = new TextComponent(" " + prefix.replace('&', '§'));
             prefixComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
             // Create the username component
