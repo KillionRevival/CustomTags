@@ -17,7 +17,7 @@ import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.utils.PrefixUtils;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.node.types.MetaNode;
@@ -77,7 +77,8 @@ public class ChatListener implements Listener {
             usernameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
             // Create the message component
-            TextComponent messageComponent = new TextComponent(MiniMessage.miniMessage().serialize(event.message()));
+            TextComponent messageComponent = new TextComponent(
+                    LegacyComponentSerializer.legacySection().serialize(event.message()));
             messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
             // Combine prefix, hoverable tag, and message
