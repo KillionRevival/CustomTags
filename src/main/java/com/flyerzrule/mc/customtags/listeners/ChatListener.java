@@ -73,7 +73,14 @@ public class ChatListener implements Listener {
             prefixComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
             // Create the username component
-            TextComponent usernameComponent = new TextComponent(premiumColor + player.getName() + "§r");
+            String nameWithNickname = LegacyComponentSerializer.legacySection().serialize(player.displayName());
+            String username;
+            if (nameWithNickname.contains("~")) {
+                username = nameWithNickname.split("~")[1];
+            } else {
+                username = player.getName();
+            }
+            TextComponent usernameComponent = new TextComponent(premiumColor + username + "§r");
             usernameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
             // Create the message component
