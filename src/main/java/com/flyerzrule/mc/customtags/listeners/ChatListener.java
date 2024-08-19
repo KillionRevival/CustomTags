@@ -1,5 +1,7 @@
 package com.flyerzrule.mc.customtags.listeners;
 
+import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
@@ -27,6 +29,8 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
+import org.kif.reincarceration.api.IReincarcerationAPI;
+
 public class ChatListener implements Listener {
 
     public ChatListener() {
@@ -37,6 +41,11 @@ public class ChatListener implements Listener {
     public void onPlayerChat(AsyncChatEvent event) {
         Player player = event.getPlayer();
         String prefix = PrefixUtils.removeTagFromPrefix(player);
+
+        IReincarcerationAPI rcApi = Objects
+                .requireNonNull(CustomTags.getPlugin().getServer().getServicesManager()
+                        .getRegistration(IReincarcerationAPI.class))
+                .getProvider();
 
         // Get Premium name color
         String premiumColor = "";
@@ -60,17 +69,27 @@ public class ChatListener implements Listener {
         Tag selectedTag = db.getSelectedForUser(player.getUniqueId().toString());
 
         if (selectedTag != null) {
-            // Create hover text component
-            String hoverContent = String.format("%s\n%s\n%s", selectedTag.getName(), selectedTag.getDescription(),
-                    (selectedTag.getObtainable() == true) ? "§aObtainable" : "§4Not-Obtainable");
-
-            TextComponent hoverComponent = new TextComponent(selectedTag.getTag());
-            hoverComponent
-                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hoverContent)));
-
             // Create the prefix component
             TextComponent prefixComponent = new TextComponent(" " + prefix.replace('&', '§'));
-            prefixComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
+            String prefixHoverContent = "§r";
+            if (rcApi.isPlayerInCycle(player)) {
+                try {
+                    prefixHoverContent = String.format("Current modifier: §a%s§r",
+                            rcApi.getPlayerModifier(player).getName());
+                } catch (SQLException e) {
+                    CustomTags.getMyLogger()
+                            .sendError("Failed to get player: " + player.getDisplayName() + " modifier");
+                }
+            }
+            prefixComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(prefixHoverContent)));
+
+            // Create tag hover text component
+            String tagHoverContent = String.format("%s\n%s\n%s", selectedTag.getName(), selectedTag.getDescription(),
+                    (selectedTag.getObtainable() == true) ? "§aObtainable" : "§4Not-Obtainable");
+
+            TextComponent tagComponent = new TextComponent(selectedTag.getTag());
+            tagComponent
+                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(tagHoverContent)));
 
             // Create the username component
             String nameWithNickname = LegacyComponentSerializer.legacySection().serialize(player.displayName());
@@ -92,7 +111,7 @@ public class ChatListener implements Listener {
             BaseComponent[] baseComponents = new ComponentBuilder("")
                     .append(prefixComponent)
                     .append(" ")
-                    .append(hoverComponent)
+                    .append(tagComponent)
                     .append(" ")
                     .append(usernameComponent)
                     .append("§8: §r")

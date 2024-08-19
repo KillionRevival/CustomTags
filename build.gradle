@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.flyerzrule.mc.customtags'
-version = '1.4.5'
+version = '1.5.0'
 def javaVersion = JavaVersion.VERSION_17
 def encoding = 'UTF-8'
 
@@ -30,11 +30,19 @@ repositories {
             password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
         }
     }
+    maven {
+        url "https://maven.pkg.github.com/KillionRevival/Reincarceration"
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
 }
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
     compileOnly 'co.killionrevival:killioncommons:1.1.0-SNAPSHOT'
+    compileOnly 'org.kif:reincarceration:1.0.10'
     shadow 'xyz.xenondevs.invui:invui:1.33'
     shadow 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
