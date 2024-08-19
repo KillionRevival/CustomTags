@@ -1,11 +1,11 @@
 package com.flyerzrule.mc.customtags.database;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.models.TagUpdateMethod;
 import com.flyerzrule.mc.customtags.models.TagUpdateType;
@@ -44,11 +44,11 @@ public class TagsDatabase extends DatabaseConnection {
         return false;
     }
 
-    private boolean createUpdateTypeEnum() {
+    private ReturnCode createUpdateTypeEnum() {
         return this.createEnumIfNotExists("custom_tags", "update_type", new String[] { "CREATE", "MODIFY", "DELETE" });
     }
 
-    private boolean createUpdateMethodEnum() {
+    private ReturnCode createUpdateMethodEnum() {
         return this.createEnumIfNotExists("custom_tags", "update_method", new String[] { "COMMAND", "PLUGIN" });
     }
 
@@ -108,13 +108,11 @@ public class TagsDatabase extends DatabaseConnection {
             return new ArrayList<>();
         }
 
-        TagsConfig tagsConfig = TagsConfig.getInstance();
-
         List<Tag> tags = new ArrayList<>();
         try {
             while (rs != null && rs.next()) {
                 String tagId = rs.getString("tagid");
-                tags.add(tagsConfig.getTagById(tagId));
+                tags.add(this.getTag(tagId));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -190,12 +188,10 @@ public class TagsDatabase extends DatabaseConnection {
             return null;
         }
 
-        TagsConfig tagsConfig = TagsConfig.getInstance();
-
         try {
             if (rs != null && rs.next()) {
                 String tagId = rs.getString("tagid");
-                return tagsConfig.getTagById(tagId);
+                return this.getTag(tagId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -274,13 +270,90 @@ public class TagsDatabase extends DatabaseConnection {
         return false;
     }
 
-    public Tag getTag(String tagId) {
+    public Tag getTag(String id) {
         String query = "SELECT * FROM custom_tags.tags WHERE tagid = ?;";
-        
+
         ResultSet rs;
         try {
-            rs = this.fetchQuery(query, tagId);
+            rs = this.fetchQuery(query, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            CustomTags.getMyLogger().sendError("ERROR Getting tag " + id);
+            return null;
         }
+
+        try {
+            if (rs != null && rs.next()) {
+                String tagId = rs.getString("tagid");
+                String name = rs.getString("name");
+                String tag = rs.getString("tag");
+                String description = rs.getString("description");
+                String material = rs.getString("material");
+                boolean obtainable = rs.getBoolean("obtainable");
+                Timestamp createDate = rs.getTimestamp("added_date");
+                return new Tag(tagId, name, tag, description, material, obtainable, createDate);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error getting tagId");
+        }
+        return null;
+    }
+
+    public List<String> getAllTagIds() {
+        String query = "SELECT tagid FROM custom_tags.tags;";
+
+        ResultSet rs;
+        try {
+            rs = this.fetchQuery(query);
+        } catch (Exception e) {
+            e.printStackTrace();
+            CustomTags.getMyLogger().sendError("ERROR Getting all tagIds");
+            return new ArrayList<>();
+        }
+
+        List<String> tagIds = new ArrayList<>();
+        try {
+            while (rs != null && rs.next()) {
+                String tagId = rs.getString("tagid");
+                tagIds.add(tagId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error getting tagId");
+        }
+        return tagIds;
+    }
+
+    public List<Tag> getAllTags() {
+        String query = "SELECT * FROM custom_tags.tags;";
+
+        ResultSet rs;
+        try {
+            rs = this.fetchQuery(query);
+        } catch (Exception e) {
+            e.printStackTrace();
+            CustomTags.getMyLogger().sendError("ERROR Getting all tags");
+            return new ArrayList<>();
+        }
+
+        List<Tag> tags = new ArrayList<>();
+        try {
+            while (rs != null && rs.next()) {
+                String tagId = rs.getString("tagid");
+                String name = rs.getString("name");
+                String tag = rs.getString("tag");
+                String description = rs.getString("description");
+                String material = rs.getString("material");
+                boolean obtainable = rs.getBoolean("obtainable");
+                Timestamp createDate = rs.getTimestamp("added_date");
+                tags.add(new Tag(tagId, name, tag, description, material, obtainable, createDate));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error getting tagId");
+        }
+        return tags;
     }
 
     private boolean addUpdateHistoryEntry(TagUpdateType type, String tagId, TagUpdateMethod method, String actor,
