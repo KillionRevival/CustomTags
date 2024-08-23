@@ -73,6 +73,7 @@ public class ChatListener implements Listener {
             TextComponent prefixComponent = new TextComponent(" " + prefix.replace('&', '§'));
             String prefixHoverContent = "§r";
             if (rcApi.isPlayerInCycle(player)) {
+                CustomTags.getMyLogger().sendDebug("Player " + player.getDisplayName() + " is in cycle");
                 try {
                     prefixHoverContent = String.format("Current modifier: §a%s§r",
                             rcApi.getPlayerModifier(player).getName());
@@ -80,6 +81,8 @@ public class ChatListener implements Listener {
                     CustomTags.getMyLogger()
                             .sendError("Failed to get player: " + player.getDisplayName() + " modifier");
                 }
+            } else {
+                CustomTags.getMyLogger().sendDebug("Player " + player.getDisplayName() + " is not in cycle");
             }
             prefixComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(prefixHoverContent)));
 
