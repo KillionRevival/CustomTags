@@ -21,6 +21,7 @@ import com.flyerzrule.mc.customtags.utils.PrefixUtils;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.luckperms.api.cacheddata.CachedMetaData;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.node.types.MetaNode;
@@ -52,10 +53,16 @@ public class ChatListener implements Listener {
         User user = userFuture.join();
 
         // Get Premium name color
-        String playerColor = Objects.requireNonNull(user.getCachedData().getMetaData().getMetaValue("username-color"),
-                "");
-        String messageColor = Objects.requireNonNull(user.getCachedData().getMetaData().getMetaValue("message-color"),
-                "");
+        String playerColor = "";
+        String messageColor = "";
+
+        CachedMetaData userMetaData = user.getCachedData().getMetaData();
+        if (userMetaData != null) {
+            playerColor = Objects.requireNonNullElse(userMetaData.getMetaValue("username-color"),
+                    "");
+            messageColor = Objects.requireNonNullElse(userMetaData.getMetaValue("message-color"),
+                    "");
+        }
 
         playerColor = playerColor.replace('&', '§');
         messageColor = messageColor.replace('&', '§');

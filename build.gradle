@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.flyerzrule.mc.customtags'
-version = '1.5.3'
+version = '1.5.4'
 def javaVersion = JavaVersion.VERSION_17
 def encoding = 'UTF-8'
 
