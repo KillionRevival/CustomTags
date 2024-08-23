@@ -68,50 +68,54 @@ public class ChatListener implements Listener {
         TagsDatabase db = TagsDatabase.getInstance();
         Tag selectedTag = db.getSelectedForUser(player.getUniqueId().toString());
 
-        if (selectedTag != null) {
-            // Create the prefix component
-            TextComponent prefixComponent = new TextComponent(" " + prefix.replace('&', '§'));
-            String prefixHoverContent = "§r";
-            if (rcApi.isPlayerInCycle(player)) {
-                CustomTags.getMyLogger().sendDebug("Player " + player.getDisplayName() + " is in cycle");
-                try {
-                    prefixHoverContent = String.format("Current modifier: §a%s§r",
-                            rcApi.getPlayerModifier(player).getName());
-                } catch (SQLException e) {
-                    CustomTags.getMyLogger()
-                            .sendError("Failed to get player: " + player.getDisplayName() + " modifier");
-                }
-            } else {
-                CustomTags.getMyLogger().sendDebug("Player " + player.getDisplayName() + " is not in cycle");
+        // Create the prefix component
+        TextComponent prefixComponent = new TextComponent(" " + prefix.replace('&', '§'));
+        String prefixHoverContent = "§r";
+        if (rcApi.isPlayerInCycle(player)) {
+            CustomTags.getMyLogger().sendDebug("Player " + player.getDisplayName() + " is in cycle");
+            try {
+                prefixHoverContent = String.format("Current modifier: §a%s§r",
+                        rcApi.getPlayerModifier(player).getName());
+            } catch (SQLException e) {
+                CustomTags.getMyLogger()
+                        .sendError("Failed to get player: " + player.getDisplayName() + " modifier");
             }
-            prefixComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(prefixHoverContent)));
+        } else {
+            CustomTags.getMyLogger().sendDebug("Player " + player.getDisplayName() + " is not in cycle");
+        }
+        prefixComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(prefixHoverContent)));
 
-            // Create tag hover text component
+        // Create tag hover text component
+        TextComponent tagComponent = null;
+        if (selectedTag != null) {
             String tagHoverContent = String.format("%s\n%s\n%s", selectedTag.getName(), selectedTag.getDescription(),
                     (selectedTag.getObtainable() == true) ? "§aObtainable" : "§4Not-Obtainable");
 
-            TextComponent tagComponent = new TextComponent(selectedTag.getTag());
+            tagComponent = new TextComponent(selectedTag.getTag());
             tagComponent
                     .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(tagHoverContent)));
+        }
 
-            // Create the username component
-            String nameWithNickname = LegacyComponentSerializer.legacySection().serialize(player.displayName());
-            String username;
-            if (nameWithNickname.contains("~")) {
-                username = nameWithNickname.split("~")[1];
-            } else {
-                username = player.getName();
-            }
-            TextComponent usernameComponent = new TextComponent(premiumColor + username + "§r");
-            usernameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
+        // Create the username component
+        String nameWithNickname = LegacyComponentSerializer.legacySection().serialize(player.displayName());
+        String username;
+        if (nameWithNickname.contains("~")) {
+            username = nameWithNickname.split("~")[1];
+        } else {
+            username = player.getName();
+        }
+        TextComponent usernameComponent = new TextComponent(premiumColor + username + "§r");
+        usernameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
-            // Create the message component
-            TextComponent messageComponent = new TextComponent(
-                    LegacyComponentSerializer.legacySection().serialize(event.message()));
-            messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
+        // Create the message component
+        TextComponent messageComponent = new TextComponent(
+                LegacyComponentSerializer.legacySection().serialize(event.message()));
+        messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
-            // Combine prefix, hoverable tag, and message
-            BaseComponent[] baseComponents = new ComponentBuilder("")
+        // Combine prefix, hoverable tag, and message
+        BaseComponent[] baseComponents;
+        if (selectedTag != null) {
+            baseComponents = new ComponentBuilder("")
                     .append(prefixComponent)
                     .append(" ")
                     .append(tagComponent)
@@ -120,13 +124,21 @@ public class ChatListener implements Listener {
                     .append("§8: §r")
                     .append(messageComponent)
                     .create();
+        } else {
+            baseComponents = new ComponentBuilder("")
+                    .append(prefixComponent)
+                    .append(" ")
+                    .append(usernameComponent)
+                    .append("§8: §r")
+                    .append(messageComponent)
+                    .create();
+        }
 
-            // Cancel the original event and send the new formatted message
-            event.setCancelled(true);
-            Bukkit.getServer().getConsoleSender().sendMessage(baseComponents);
-            for (Player p : CustomTags.getPlugin().getServer().getOnlinePlayers()) {
-                p.sendMessage(baseComponents);
-            }
+        // Cancel the original event and send the new formatted message
+        event.setCancelled(true);
+        Bukkit.getServer().getConsoleSender().sendMessage(baseComponents);
+        for (Player p : CustomTags.getPlugin().getServer().getOnlinePlayers()) {
+            p.sendMessage(baseComponents);
         }
     }
 }
