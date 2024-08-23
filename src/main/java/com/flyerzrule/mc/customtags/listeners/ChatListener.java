@@ -2,11 +2,7 @@ package com.flyerzrule.mc.customtags.listeners;
 
 import java.sql.SQLException;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -23,13 +19,14 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.cacheddata.CachedMetaData;
 import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.Node;
-import net.luckperms.api.node.types.MetaNode;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 
 import org.kif.reincarceration.api.IReincarcerationAPI;
 
@@ -43,6 +40,14 @@ public class ChatListener implements Listener {
     public void onPlayerChat(AsyncChatEvent event) {
         Player player = event.getPlayer();
         String prefix = PrefixUtils.removeTagFromPrefix(player);
+
+        SimpleClans sc = CustomTags.getSimpleClans();
+        ClanPlayer clanPlayer = sc.getClanManager().getClanPlayer(player.getUniqueId());
+        if (clanPlayer != null
+                && (clanPlayer.getChannel() == Channel.CLAN || clanPlayer.getChannel() == Channel.ALLY)) {
+            CustomTags.getMyLogger().sendDebug("Chat message is either in clan or ally chat. Skipping...");
+            return;
+        }
 
         IReincarcerationAPI rcApi = Objects
                 .requireNonNull(CustomTags.getPlugin().getServer().getServicesManager()

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.flyerzrule.mc.customtags'
-version = '1.5.4'
+version = '1.6.0'
 def javaVersion = JavaVersion.VERSION_17
 def encoding = 'UTF-8'
 
@@ -24,14 +24,18 @@ repositories {
         url 'https://jitpack.io' 
     }
     maven {
-        url "https://maven.pkg.github.com/KillionRevival/KillionCommons"
+        url 'https://maven.pkg.github.com/KillionRevival/KillionCommons'
         credentials {
             username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
             password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
         }
     }
     maven {
-        url "https://maven.pkg.github.com/KillionRevival/Reincarceration"
+        name 'roinujnosde-repo'
+        url 'https://repo.roinujnosde.me/releases/'
+    }
+    maven {
+        url 'https://maven.pkg.github.com/KillionRevival/Reincarceration'
         credentials {
             username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
             password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
@@ -48,6 +52,7 @@ dependencies {
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
     compileOnly 'net.md-5:bungeecord-chat:1.20-R0.2'
     compileOnly 'net.luckperms:api:5.4'
+    compileOnly 'net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.19.2'
 }
 
 java {

@@ -9,6 +9,7 @@ import java.util.logging.Level;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,6 +37,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import xyz.xenondevs.invui.gui.structure.Structure;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
@@ -47,6 +49,7 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
     private static LuckPerms luckPerms;
     private static KillionCommonsApi api;
     private static ConsoleUtil logger;
+    private static SimpleClans sc;
 
     @Override
     public void onEnable() {
@@ -54,6 +57,11 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
         api = new KillionCommonsApi(plugin);
         logger = api.getConsoleUtil();
+
+        Plugin scPlugin = getServer().getPluginManager().getPlugin("SimpleClans");
+        if (scPlugin != null) {
+            sc = (SimpleClans) scPlugin;
+        }
 
         ensureDataFolderExists();
         ensureTagsConfigExists();
@@ -113,6 +121,10 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
     public static ConsoleUtil getMyLogger() {
         return logger;
+    }
+
+    public static SimpleClans getSimpleClans() {
+        return sc;
     }
 
     private boolean setupPermissions() {
