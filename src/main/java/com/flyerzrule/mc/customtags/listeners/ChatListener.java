@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -47,23 +48,17 @@ public class ChatListener implements Listener {
                         .getRegistration(IReincarcerationAPI.class))
                 .getProvider();
 
-        // Get Premium name color
-        String premiumColor = "";
         CompletableFuture<User> userFuture = CustomTags.getLuckPerms().getUserManager().loadUser(player.getUniqueId());
         User user = userFuture.join();
-        Optional<Node> metaOptional = user.getNodes().stream()
-                .filter(node -> node instanceof MetaNode).findFirst();
-        if (metaOptional.isPresent()) {
-            MetaNode metaNode = (MetaNode) metaOptional.get();
-            Pattern premiumColorRegex = Pattern.compile("meta\\.username-color\\.(&\\S)");
-            String metadata = metaNode.getKey();
 
-            Matcher match = premiumColorRegex.matcher(metadata);
+        // Get Premium name color
+        String playerColor = Objects.requireNonNull(user.getCachedData().getMetaData().getMetaValue("username-color"),
+                "");
+        String messageColor = Objects.requireNonNull(user.getCachedData().getMetaData().getMetaValue("message-color"),
+                "");
 
-            if (match.find()) {
-                premiumColor = match.group(1).replace('&', '§');
-            }
-        }
+        playerColor = playerColor.replace('&', '§');
+        messageColor = messageColor.replace('&', '§');
 
         TagsDatabase db = TagsDatabase.getInstance();
         Tag selectedTag = db.getSelectedForUser(player.getUniqueId().toString());
@@ -104,12 +99,12 @@ public class ChatListener implements Listener {
         } else {
             username = player.getName();
         }
-        TextComponent usernameComponent = new TextComponent(premiumColor + username + "§r");
+        TextComponent usernameComponent = new TextComponent(playerColor + username + "§r");
         usernameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
         // Create the message component
         TextComponent messageComponent = new TextComponent(
-                LegacyComponentSerializer.legacySection().serialize(event.message()));
+                messageColor + LegacyComponentSerializer.legacySection().serialize(event.message()) + "§r");
         messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
 
         // Combine prefix, hoverable tag, and message
