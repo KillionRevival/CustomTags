@@ -49,10 +49,7 @@ public class ChatListener implements Listener {
             return;
         }
 
-        IReincarcerationAPI rcApi = Objects
-                .requireNonNull(CustomTags.getPlugin().getServer().getServicesManager()
-                        .getRegistration(IReincarcerationAPI.class))
-                .getProvider();
+        IReincarcerationAPI rcApi = CustomTags.getReincarcerationAPI();
 
         CompletableFuture<User> userFuture = CustomTags.getLuckPerms().getUserManager().loadUser(player.getUniqueId());
         User user = userFuture.join();
