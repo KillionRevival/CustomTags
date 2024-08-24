@@ -75,7 +75,7 @@ public class ChatListener implements Listener {
         // Create the prefix component
         TextComponent prefixComponent = new TextComponent(" " + prefix.replace('&', '§'));
         String prefixHoverContent = "§r";
-        if (rcApi.isPlayerInCycle(player)) {
+        if (rcApi != null && rcApi.isPlayerInCycle(player)) {
             CustomTags.getMyLogger().sendDebug("Player " + player.getDisplayName() + " is in cycle");
             try {
                 prefixHoverContent = String.format("Current modifier: §a%s§r",

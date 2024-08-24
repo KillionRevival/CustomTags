@@ -61,10 +61,15 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
         sc = (SimpleClans) Objects.requireNonNull(getServer().getPluginManager().getPlugin("SimpleClans"));
 
-        rcApi = Objects
-                .requireNonNull(CustomTags.getPlugin().getServer().getServicesManager()
-                        .getRegistration(IReincarcerationAPI.class))
-                .getProvider();
+        // Try to load the IReincarcerationAPI
+        try {
+            rcApi = CustomTags.getPlugin().getServer().getServicesManager()
+                    .getRegistration(IReincarcerationAPI.class)
+                    .getProvider();
+        } catch (Exception e) {
+            rcApi = null;
+            logger.sendError("Failed to load IReincarcerationAPI");
+        }
 
         ensureDataFolderExists();
         ensureTagsConfigExists();
