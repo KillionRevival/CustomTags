@@ -4,8 +4,8 @@ main: com.flyerzrule.mc.customtags.CustomTags
 author: flyerzrule
 api-version: 1.18
 description: A plugin that allows players to select their custom tags
-depend:
-  [Vault, Essentials, LuckPerms, KillionCommons, SimpleClans, Reincarceration]
+depend: [Vault, Essentials, LuckPerms, KillionCommons, SimpleClans]
+softdepend: [Reincarceration]
 commands:
   tags:
     description: Show you all of the tags you own
