@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Objects;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.kif.reincarceration.api.IReincarcerationAPI;
 
 import com.flyerzrule.mc.customtags.api.API;
 import com.flyerzrule.mc.customtags.api.CustomTagsAPI;
@@ -36,6 +37,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import xyz.xenondevs.invui.gui.structure.Structure;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
@@ -47,6 +49,8 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
     private static LuckPerms luckPerms;
     private static KillionCommonsApi api;
     private static ConsoleUtil logger;
+    private static SimpleClans sc;
+    private static IReincarcerationAPI rcApi;
 
     @Override
     public void onEnable() {
@@ -54,6 +58,18 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
         api = new KillionCommonsApi(plugin);
         logger = api.getConsoleUtil();
+
+        sc = (SimpleClans) Objects.requireNonNull(getServer().getPluginManager().getPlugin("SimpleClans"));
+
+        // Try to load the IReincarcerationAPI
+        try {
+            rcApi = CustomTags.getPlugin().getServer().getServicesManager()
+                    .getRegistration(IReincarcerationAPI.class)
+                    .getProvider();
+        } catch (Exception e) {
+            rcApi = null;
+            logger.sendError("Failed to load IReincarcerationAPI");
+        }
 
         ensureDataFolderExists();
         ensureTagsConfigExists();
@@ -113,6 +129,14 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
     public static ConsoleUtil getMyLogger() {
         return logger;
+    }
+
+    public static SimpleClans getSimpleClans() {
+        return sc;
+    }
+
+    public static IReincarcerationAPI getReincarcerationAPI() {
+        return rcApi;
     }
 
     private boolean setupPermissions() {
