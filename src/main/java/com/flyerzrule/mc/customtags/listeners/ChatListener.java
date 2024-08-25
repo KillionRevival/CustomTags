@@ -1,6 +1,5 @@
 package com.flyerzrule.mc.customtags.listeners;
 
-import java.sql.SQLException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
@@ -28,8 +27,6 @@ import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 
-import org.kif.reincarceration.api.IReincarcerationAPI;
-
 public class ChatListener implements Listener {
 
     public ChatListener() {
@@ -48,8 +45,6 @@ public class ChatListener implements Listener {
             CustomTags.getMyLogger().sendDebug("Chat message is either in clan or ally chat. Skipping...");
             return;
         }
-
-        IReincarcerationAPI rcApi = CustomTags.getReincarcerationAPI();
 
         CompletableFuture<User> userFuture = CustomTags.getLuckPerms().getUserManager().loadUser(player.getUniqueId());
         User user = userFuture.join();
@@ -74,20 +69,6 @@ public class ChatListener implements Listener {
 
         // Create the prefix component
         TextComponent prefixComponent = new TextComponent(" " + prefix.replace('&', '§'));
-        String prefixHoverContent = "§r";
-        if (rcApi != null && rcApi.isPlayerInCycle(player)) {
-            CustomTags.getMyLogger().sendDebug("Player " + player.getDisplayName() + " is in cycle");
-            try {
-                prefixHoverContent = String.format("Current modifier: §a%s§r",
-                        rcApi.getPlayerModifier(player).getName());
-            } catch (SQLException e) {
-                CustomTags.getMyLogger()
-                        .sendError("Failed to get player: " + player.getDisplayName() + " modifier");
-            }
-        } else {
-            CustomTags.getMyLogger().sendDebug("Player " + player.getDisplayName() + " is not in cycle");
-        }
-        prefixComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(prefixHoverContent)));
 
         // Create tag hover text component
         TextComponent tagComponent = null;
