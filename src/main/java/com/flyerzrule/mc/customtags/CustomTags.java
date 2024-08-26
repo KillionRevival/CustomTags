@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.kif.reincarceration.api.IReincarcerationAPI;
 
 import com.flyerzrule.mc.customtags.api.API;
 import com.flyerzrule.mc.customtags.api.CustomTagsAPI;
@@ -31,7 +30,7 @@ import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.listeners.ChatListener;
 import com.flyerzrule.mc.customtags.listeners.GroupListener;
 
-import co.killionrevival.killioncommons.KillionCommonsApi;
+import co.killionrevival.killioncommons.KillionUtilities;
 import co.killionrevival.killioncommons.util.ConsoleUtil;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -42,22 +41,20 @@ import xyz.xenondevs.invui.gui.structure.Structure;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
 public class CustomTags extends JavaPlugin implements CustomTagsAPI {
-    private File configFile = new File(getDataFolder(), "tags.json");
     private static JavaPlugin plugin = null;
     private static Permission perms = null;
     private static Chat chat = null;
     private static LuckPerms luckPerms;
-    private static KillionCommonsApi api;
+    private static KillionUtilities killionUtils;
     private static ConsoleUtil logger;
     private static SimpleClans sc;
-    private static IReincarcerationAPI rcApi;
 
     @Override
     public void onEnable() {
         plugin = this;
 
-        api = new KillionCommonsApi(plugin);
-        logger = api.getConsoleUtil();
+        killionUtils = new KillionUtilities(plugin);
+        logger = killionUtils.getConsoleUtil();
 
         sc = (SimpleClans) Objects.requireNonNull(getServer().getPluginManager().getPlugin("SimpleClans"));
 
@@ -67,8 +64,8 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
         saveDefaultConfig();
 
         TagsConfig tagConfig = TagsConfig.getInstance();
-        tagConfig.setFile(configFile);
-        tagConfig.parseFile();
+        tagConfig.setFilePath(getDataFolder().getAbsolutePath() + "/tags.json");
+        tagConfig.parseJson();
 
         TagsDatabase.getInstance();
 
@@ -113,8 +110,8 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
         return luckPerms;
     }
 
-    public static KillionCommonsApi getApi() {
-        return api;
+    public static KillionUtilities getKillionUtils() {
+        return killionUtils;
     }
 
     public static ConsoleUtil getMyLogger() {
@@ -123,10 +120,6 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
     public static SimpleClans getSimpleClans() {
         return sc;
-    }
-
-    public static IReincarcerationAPI getReincarcerationAPI() {
-        return rcApi;
     }
 
     private boolean setupPermissions() {
@@ -166,6 +159,7 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
     }
 
     private void ensureTagsConfigExists() {
+        File configFile = new File(getDataFolder(), "tags.json");
         if (!configFile.exists()) {
             try (InputStream in = getResource("tags.json")) {
                 if (in != null) {

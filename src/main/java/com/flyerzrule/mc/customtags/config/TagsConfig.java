@@ -1,26 +1,24 @@
 package com.flyerzrule.mc.customtags.config;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.FileReader;
+import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.models.TagContainer;
+import com.google.gson.Gson;
 
 public class TagsConfig {
     private static TagsConfig instance;
 
-    private final ObjectMapper objectMapper;
-    private File file;
+    private String filePath;
 
     private List<Tag> tags;
 
     private TagsConfig() {
-        this.objectMapper = new ObjectMapper();
         this.tags = new ArrayList<>();
     }
 
@@ -31,26 +29,24 @@ public class TagsConfig {
         return instance;
     }
 
-    public List<Tag> parseFile() {
-        try {
-            TagContainer tagContainer = objectMapper.readValue(this.file, TagContainer.class);
+    public List<Tag> parseJson() {
+        String json = this.readFile();
+        Gson gson = new Gson();
+        TagContainer tagContainer = gson.fromJson(json, TagContainer.class);
 
-            if (tagContainer != null && tagContainer.getTags() != null) {
-                this.tags = tagContainer.getTags();
-                return this.tags;
-            } else {
-                CustomTags.getMyLogger().sendError("Failed to parse tags.json");
-            }
-        } catch (IOException e) {
+        if (tagContainer != null && tagContainer.getTags() != null) {
+            this.tags = tagContainer.getTags();
+            return this.tags;
+        } else {
             CustomTags.getMyLogger().sendError("Failed to parse tags.json");
-            CustomTags.getMyLogger().sendError(e.getMessage());
         }
+
         this.tags = new ArrayList<Tag>();
         return this.tags;
     }
 
-    public void setFile(File file) {
-        this.file = file;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public List<Tag> getTags() {
@@ -63,5 +59,25 @@ public class TagsConfig {
 
     public Tag getTagById(String id) {
         return this.tags.stream().filter(ele -> ele.getId().equals(id)).findFirst().get();
+    }
+
+    private String readFile() {
+        if (this.filePath == null) {
+            return null;
+        }
+
+        StringBuilder jsonContent = new StringBuilder();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(this.filePath));
+            String line;
+            while ((line = br.readLine()) != null) {
+                jsonContent.append(line);
+            }
+            br.close();
+        } catch (Exception e) {
+            CustomTags.getMyLogger().sendError("Failed to read tags.json");
+        }
+        return jsonContent.toString();
     }
 }

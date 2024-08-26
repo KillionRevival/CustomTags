@@ -48,7 +48,7 @@ public class TagItem extends AbstractItem {
         String tag = String.format("§l%s", this.tag.getTag());
         String nameLore = String.format("Name: %s", this.tag.getName());
         String descriptionLore = String.format("Description: %s", this.tag.getDescription());
-        String obtainableLore = (this.tag.getObtainable() == true) ? "§aObtainable" : "§4Not-Obtainable";
+        String obtainableLore = (this.tag.isObtainable() == true) ? "§aObtainable" : "§4Not-Obtainable";
 
         ItemBuilder item = new ItemBuilder(this.tag.getMaterial()).setDisplayName(tag).addLoreLines(
                 nameLore,

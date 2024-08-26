@@ -15,7 +15,7 @@ public class TagsDatabase extends DatabaseConnection {
     private static TagsDatabase instance;
 
     private TagsDatabase() {
-        super(CustomTags.getApi().getConsoleUtil());
+        super(CustomTags.getKillionUtils().getConsoleUtil());
         createSchema();
         createOwnedTagsTable();
         createSelectedTagsTable();

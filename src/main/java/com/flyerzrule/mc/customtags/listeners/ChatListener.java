@@ -74,7 +74,7 @@ public class ChatListener implements Listener {
         TextComponent tagComponent = null;
         if (selectedTag != null) {
             String tagHoverContent = String.format("%s\n%s\n%s", selectedTag.getName(), selectedTag.getDescription(),
-                    (selectedTag.getObtainable() == true) ? "§aObtainable" : "§4Not-Obtainable");
+                    (selectedTag.isObtainable() == true) ? "§aObtainable" : "§4Not-Obtainable");
 
             tagComponent = new TextComponent(selectedTag.getTag());
             tagComponent

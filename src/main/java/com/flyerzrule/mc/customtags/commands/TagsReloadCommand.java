@@ -16,7 +16,7 @@ public class TagsReloadCommand implements CommandExecutor {
             CustomTags.getMyLogger().sendInfo(String.format("Player: %s triggered a reload!",
                     sender.getName()));
             sender.sendMessage("Triggered a reload!");
-            tagsConfig.parseFile();
+            tagsConfig.parseJson();
             return true;
         }
         return false;
