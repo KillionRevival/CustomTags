@@ -5,6 +5,9 @@ import java.text.SimpleDateFormat;
 
 import org.bukkit.Material;
 
+import lombok.ToString;
+
+@ToString
 public class Tag {
     private String id;
     private String name;
@@ -109,13 +112,5 @@ public class Tag {
 
     private String setColors(String input) {
         return input.replace("&", "§");
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "tagId: %s, name: %s, tag: %s, description: %s, material: %s, obtainable: %b, createDate: %s", this.id,
-                this.name, this.tag, this.description, this.material.name(), this.obtainable,
-                new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(this.createDate));
     }
 }

@@ -2,12 +2,10 @@ package com.flyerzrule.mc.customtags.utils;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
 
@@ -36,10 +34,10 @@ public class PrefixUtils {
     }
 
     public static String removeTagFromPrefix(Player player) {
-        TagsConfig tagsConfig = TagsConfig.getInstance();
         Chat chat = CustomTags.getChat();
+        TagsDatabase db = TagsDatabase.getInstance();
 
-        List<String> allTags = tagsConfig.getTags().stream().map(ele -> ele.getTag()).collect(Collectors.toList());
+        List<String> allTags = db.getAllTagIds();
         String prefix = chat.getPlayerPrefix(player);
         for (String tag : allTags) {
             prefix = prefix.replace(tag + "§r", "");

@@ -18,12 +18,18 @@ public class TagsDatabase extends DatabaseConnection {
     private static TagsDatabase instance;
 
     private TagsDatabase() {
-        super(CustomTags.getApi().getConsoleUtil());
-        createSchema();
-        createOwnedTagsTable();
-        createSelectedTagsTable();
-        createTagsTable();
-        createUpdateHistoryTable();
+        super(CustomTags.getKillionUtilities().getConsoleUtil());
+
+        boolean failure = false;
+        failure |= createSchemaIfNotExists("custom_tags").isTruthy();
+        failure |= createOwnedTagsTable().isTruthy();
+        failure |= createSelectedTagsTable().isTruthy();
+        failure |= createTagsTable().isTruthy();
+        failure |= createUpdateHistoryTable().isTruthy();
+
+        if (failure) {
+            CustomTags.getMyLogger().sendError("Failed to setup database!");
+        }
     }
 
     public static TagsDatabase getInstance() {
@@ -31,17 +37,6 @@ public class TagsDatabase extends DatabaseConnection {
             TagsDatabase.instance = new TagsDatabase();
         }
         return TagsDatabase.instance;
-    }
-
-    private boolean createSchema() {
-        String query = "CREATE SCHEMA IF NOT EXISTS custom_tags;";
-        try {
-            this.executeQuery(query);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     private ReturnCode createUpdateTypeEnum() {
@@ -52,50 +47,50 @@ public class TagsDatabase extends DatabaseConnection {
         return this.createEnumIfNotExists("custom_tags", "update_method", new String[] { "COMMAND", "PLUGIN" });
     }
 
-    private boolean createOwnedTagsTable() {
+    private ReturnCode createOwnedTagsTable() {
         String query = "CREATE TABLE IF NOT EXISTS custom_tags.owned_tags (userid TEXT, tagid TEXT, PRIMARY KEY (userid, tagid));";
         try {
             this.executeQuery(query);
-            return true;
+            return ReturnCode.SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return ReturnCode.FAILURE;
     }
 
-    private boolean createSelectedTagsTable() {
+    private ReturnCode createSelectedTagsTable() {
         String query = "CREATE TABLE IF NOT EXISTS custom_tags.selected_tags (userid TEXT PRIMARY KEY, tagid TEXT);";
         try {
             this.executeQuery(query);
-            return true;
+            return ReturnCode.SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return ReturnCode.FAILURE;
     }
 
-    private boolean createTagsTable() {
+    private ReturnCode createTagsTable() {
         String query = "CREATE TABLE IF NO EXISTS custom_tags.tags (tagid TEXT PRIMARY KEY, name TEXT, tag TEXT, description TEXT, material TEXT, obtainable BOOLEAN, added_date TIMESTAMPTZ DEFAULT NOW())";
         try {
             this.executeQuery(query);
-            return true;
+            return ReturnCode.SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return ReturnCode.FAILURE;
     }
 
-    private boolean createUpdateHistoryTable() {
+    private ReturnCode createUpdateHistoryTable() {
         this.createUpdateTypeEnum();
         this.createUpdateMethodEnum();
         String query = "CREATE TABLE IF NO EXISTS custom_tags.update_history (updateId SERIAL PRIMARY KEY, type update_type, tagid TEXT, date TIMESTAMPTZ DEFAULT NOW(), method update_method, actor TEXT, old TEXT, new TEXT)";
         try {
             this.executeQuery(query);
-            return true;
+            return ReturnCode.SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return ReturnCode.FAILURE;
     }
 
     public List<Tag> getUserOwnedTags(String userId) {
@@ -200,21 +195,25 @@ public class TagsDatabase extends DatabaseConnection {
         return null;
     }
 
-    public boolean createTag(Tag newTag, TagUpdateMethod updateMethod, String actor) {
+    public ReturnCode createTag(Tag newTag, TagUpdateMethod updateMethod, String actor) {
         String query = "INSERT INTO custom_tags.tags (tagid, name, tag, description, material, obtainable) VALUES (?, ?, ?, ?, ?, ?);";
-        try {
-            this.executeUpdate(query, newTag.getId(), newTag.getName(), newTag.getTag(), newTag.getDescription(),
-                    newTag.getMaterial().name(), newTag.getObtainable());
-        } catch (Exception e) {
-            e.printStackTrace();
-            CustomTags.getMyLogger().sendError("ERROR Creating tag " + newTag.getId());
-            return false;
+        if (!this.tagExists(newTag.getId())) {
+            try {
+                this.executeUpdate(query, newTag.getId(), newTag.getName(), newTag.getTag(), newTag.getDescription(),
+                        newTag.getMaterial().name(), newTag.getObtainable());
+            } catch (Exception e) {
+                e.printStackTrace();
+                CustomTags.getMyLogger().sendError("ERROR Creating tag " + newTag.getId());
+                return ReturnCode.FAILURE;
+            }
+        } else {
+            return ReturnCode.ALREADY_EXISTS;
         }
 
         return this.addUpdateHistoryEntry(TagUpdateType.CREATE, newTag.getId(), updateMethod, actor, null, newTag);
     }
 
-    public boolean deleteTag(String tagId, TagUpdateMethod updateMethod, String actor) {
+    public ReturnCode deleteTag(String tagId, TagUpdateMethod updateMethod, String actor) {
         if (this.tagExists(tagId)) {
             Tag oldTag = this.getTag(tagId);
             String query = "DELETE FROM custom_tags.tags WHERE tagid = ?;";
@@ -223,7 +222,7 @@ public class TagsDatabase extends DatabaseConnection {
             } catch (Exception e) {
                 e.printStackTrace();
                 CustomTags.getMyLogger().sendError("ERROR Deleting tag " + tagId);
-                return false;
+                return ReturnCode.FAILURE;
             }
 
             return this.addUpdateHistoryEntry(TagUpdateType.DELETE, tagId, updateMethod, actor, oldTag, null);
@@ -231,10 +230,10 @@ public class TagsDatabase extends DatabaseConnection {
             CustomTags.getMyLogger()
                     .sendError("ERROR Cannot delete tag " + tagId + " since it does not exist");
         }
-        return false;
+        return ReturnCode.NOT_EXIST;
     }
 
-    public boolean modifyTag(Tag newTag, TagUpdateMethod method, String actor) {
+    public ReturnCode modifyTag(Tag newTag, TagUpdateMethod method, String actor) {
         if (this.tagExists(newTag.getId())) {
             Tag oldTag = this.getTag(newTag.getId());
             String query = "UPDATE custom_tags.tags SET name = ?, tag = ?, description = ?, material = ?, obtainable = ? WHERE tagid = ?;";
@@ -245,7 +244,7 @@ public class TagsDatabase extends DatabaseConnection {
             } catch (Exception e) {
                 e.printStackTrace();
                 CustomTags.getMyLogger().sendError("ERROR Modifying tag " + newTag.getId());
-                return false;
+                return ReturnCode.FAILURE;
             }
 
             return this.addUpdateHistoryEntry(TagUpdateType.MODIFY, newTag.getId(), method, actor, oldTag, newTag);
@@ -253,7 +252,7 @@ public class TagsDatabase extends DatabaseConnection {
             CustomTags.getMyLogger()
                     .sendError("ERROR Cannot modify tag " + newTag.getId() + " since it does not exist");
         }
-        return false;
+        return ReturnCode.FAILURE;
     }
 
     public boolean tagExists(String tagId) {
@@ -356,7 +355,7 @@ public class TagsDatabase extends DatabaseConnection {
         return tags;
     }
 
-    private boolean addUpdateHistoryEntry(TagUpdateType type, String tagId, TagUpdateMethod method, String actor,
+    private ReturnCode addUpdateHistoryEntry(TagUpdateType type, String tagId, TagUpdateMethod method, String actor,
             Tag oldTag, Tag newTag) {
         final String emptyVersion = "N/A";
 
@@ -406,12 +405,12 @@ public class TagsDatabase extends DatabaseConnection {
 
         try {
             this.executeUpdate(query, type.toString(), tagId, method.toString(), actor, oldTagStr, newTagStr);
-            return true;
+            return ReturnCode.SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
             CustomTags.getMyLogger().sendError("ERROR Creating history entry for tag " + tagId);
         }
-        return false;
+        return ReturnCode.FAILURE;
     }
 
     private boolean isEqual(String v1, String v2) {

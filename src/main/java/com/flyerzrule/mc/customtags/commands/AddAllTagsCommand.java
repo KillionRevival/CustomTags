@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.utils.Utils;
@@ -32,9 +31,8 @@ public class AddAllTagsCommand implements CommandExecutor {
                             sender.getName() + " sent command " + cmd.getName() + " for player " + player.getName());
                     String uuid = player.getUniqueId().toString();
                     TagsDatabase db = TagsDatabase.getInstance();
-                    TagsConfig tagsConfig = TagsConfig.getInstance();
 
-                    List<Tag> allTags = tagsConfig.getTags();
+                    List<Tag> allTags = db.getAllTags();
                     List<Tag> ownedTags = db.getUserOwnedTags(uuid);
 
                     List<String> diffTagIds = Utils.getDifferenceTags(allTags, ownedTags).stream()
@@ -43,7 +41,7 @@ public class AddAllTagsCommand implements CommandExecutor {
                     boolean result = true;
 
                     for (String tagId : diffTagIds) {
-                        result &= db.giveUserTag(uuid, tagId);
+                        result &= db.giveUserTag(uuid, tagId).isTruthy();
                     }
 
                     if (result) {
