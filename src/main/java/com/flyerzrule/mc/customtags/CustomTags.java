@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.kif.reincarceration.api.IReincarcerationAPI;
 
 import com.flyerzrule.mc.customtags.api.API;
 import com.flyerzrule.mc.customtags.api.CustomTagsAPI;
@@ -26,12 +25,11 @@ import com.flyerzrule.mc.customtags.commands.TagsUserCommand;
 import com.flyerzrule.mc.customtags.commands.tabcompleters.AddTagTabComplete;
 import com.flyerzrule.mc.customtags.commands.tabcompleters.RemoveTagTabComplete;
 import com.flyerzrule.mc.customtags.commands.tabcompleters.UsersTabComplete;
-import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.listeners.ChatListener;
 import com.flyerzrule.mc.customtags.listeners.GroupListener;
 
-import co.killionrevival.killioncommons.KillionCommonsApi;
+import co.killionrevival.killioncommons.KillionUtilities;
 import co.killionrevival.killioncommons.util.ConsoleUtil;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -47,17 +45,16 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
     private static Permission perms = null;
     private static Chat chat = null;
     private static LuckPerms luckPerms;
-    private static KillionCommonsApi api;
+    private static KillionUtilities killionUtilities;
     private static ConsoleUtil logger;
     private static SimpleClans sc;
-    private static IReincarcerationAPI rcApi;
 
     @Override
     public void onEnable() {
         plugin = this;
 
-        api = new KillionCommonsApi(plugin);
-        logger = api.getConsoleUtil();
+        killionUtilities = new KillionUtilities(plugin);
+        logger = killionUtilities.getConsoleUtil();
 
         sc = (SimpleClans) Objects.requireNonNull(getServer().getPluginManager().getPlugin("SimpleClans"));
 
@@ -65,10 +62,6 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
         ensureTagsConfigExists();
 
         saveDefaultConfig();
-
-        TagsConfig tagConfig = TagsConfig.getInstance();
-        tagConfig.setFile(configFile);
-        tagConfig.parseFile();
 
         TagsDatabase.getInstance();
 
@@ -113,8 +106,8 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
         return luckPerms;
     }
 
-    public static KillionCommonsApi getApi() {
-        return api;
+    public static KillionUtilities getKillionUtilities() {
+        return killionUtilities;
     }
 
     public static ConsoleUtil getMyLogger() {
@@ -123,10 +116,6 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
     public static SimpleClans getSimpleClans() {
         return sc;
-    }
-
-    public static IReincarcerationAPI getReincarcerationAPI() {
-        return rcApi;
     }
 
     private boolean setupPermissions() {
