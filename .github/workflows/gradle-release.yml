@@ -21,6 +21,7 @@ jobs:
         id: build-step
         with:
           token: ${{ secrets.PAT }}
+          java-version: 21
 
       - name: Upload Release Asset
         id: release
@@ -31,4 +32,6 @@ jobs:
       - name: Deploy to package repo
         id: deploy
         uses: KillionRevival/gradle-deploy-action@v1
+        with:
+          java-version: 21
         
