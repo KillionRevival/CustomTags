@@ -30,7 +30,7 @@ public class RemoveTagCommand implements CommandExecutor {
 
                     String uuid = player.getUniqueId().toString();
                     TagsDatabase db = TagsDatabase.getInstance();
-                    boolean result = db.removeUserTag(uuid, tagId);
+                    boolean result = db.removeUserTag(uuid, tagId).isTruthy();
 
                     // If the removed tag was selected, unselect it
                     Tag currentSelected = db.getSelectedForUser(uuid);

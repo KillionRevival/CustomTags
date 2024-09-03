@@ -20,7 +20,6 @@ import com.flyerzrule.mc.customtags.commands.AddTagCommand;
 import com.flyerzrule.mc.customtags.commands.RemoveAllTagsCommand;
 import com.flyerzrule.mc.customtags.commands.RemoveTagCommand;
 import com.flyerzrule.mc.customtags.commands.TagsCommand;
-import com.flyerzrule.mc.customtags.commands.TagsReloadCommand;
 import com.flyerzrule.mc.customtags.commands.TagsUserCommand;
 import com.flyerzrule.mc.customtags.commands.tabcompleters.AddTagTabComplete;
 import com.flyerzrule.mc.customtags.commands.tabcompleters.RemoveTagTabComplete;
@@ -28,8 +27,10 @@ import com.flyerzrule.mc.customtags.commands.tabcompleters.UsersTabComplete;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.listeners.ChatListener;
 import com.flyerzrule.mc.customtags.listeners.GroupListener;
+import com.flyerzrule.mc.customtags.models.Tag;
 
 import co.killionrevival.killioncommons.KillionUtilities;
+import co.killionrevival.killioncommons.database.models.ReturnCode;
 import co.killionrevival.killioncommons.util.ConsoleUtil;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -186,9 +187,6 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
         this.getCommand("tagremoveall").setExecutor(new RemoveAllTagsCommand());
         this.getCommand("tagremoveall").setTabCompleter(new UsersTabComplete());
-
-        this.getCommand("tagreload").setExecutor(new TagsReloadCommand());
-
     }
 
     private void registerListeners() {
@@ -201,15 +199,15 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
     }
 
     // API Methods
-    public boolean giveUserTag(Player player, String tagId) {
+    public ReturnCode giveUserTag(Player player, String tagId) {
         return API.giveUserTag(player, tagId);
     }
 
-    public boolean removeUserTag(Player player, String tagId) {
+    public ReturnCode removeUserTag(Player player, String tagId) {
         return API.removeUserTag(player, tagId);
     }
 
-    public boolean removeAllUserTags(Player player) {
+    public ReturnCode removeAllUserTags(Player player) {
         return API.removeAllUserTags(player);
     }
 
@@ -217,11 +215,11 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
         return API.getUserTagIds(player);
     }
 
-    public boolean setUserSelectedTag(Player player, String tagId) {
+    public ReturnCode setUserSelectedTag(Player player, String tagId) {
         return API.setUserSelectedTag(player, tagId);
     }
 
-    public boolean removeUserSelectedTag(Player player) {
+    public ReturnCode removeUserSelectedTag(Player player) {
         return API.removeUserSelectedTag(player);
     }
 
@@ -231,5 +229,29 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
     public List<String> getAvailableTagIds() {
         return API.getAvailableTagIds();
+    }
+
+    public ReturnCode createTag(String pluginIdentifier, Tag newTag) {
+        return API.createTag(pluginIdentifier, newTag);
+    }
+
+    public ReturnCode deleteTag(String pluginIdentifier, String tagId) {
+        return API.deleteTag(pluginIdentifier, tagId);
+    }
+
+    public ReturnCode modifyTag(String pluginIdentifier, Tag newTag) {
+        return API.modifyTag(pluginIdentifier, newTag);
+    }
+
+    public ReturnCode ensureTag(String pluginIdentifier, Tag newTag) {
+        return API.ensureTag(pluginIdentifier, newTag);
+    }
+
+    public boolean tagExists(String tagId) {
+        return API.tagExists(tagId);
+    }
+
+    public Tag getTag(String tagId) {
+        return API.getTag(tagId);
     }
 }

@@ -28,7 +28,7 @@ public class AddTagCommand implements CommandExecutor {
                                     + " and tag " + tagId);
                     String uuid = player.getUniqueId().toString();
                     TagsDatabase db = TagsDatabase.getInstance();
-                    boolean result = db.giveUserTag(uuid, tagId);
+                    boolean result = db.giveUserTag(uuid, tagId).isTruthy();
                     if (result) {
                         CustomTags.getMyLogger()
                                 .sendInfo(String.format("%s added tag %s to user %s(%s)", sender.getName(), tagId,

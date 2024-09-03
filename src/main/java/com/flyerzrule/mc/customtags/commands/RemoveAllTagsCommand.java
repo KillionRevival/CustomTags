@@ -28,7 +28,7 @@ public class RemoveAllTagsCommand implements CommandExecutor {
 
                     String uuid = player.getUniqueId().toString();
                     TagsDatabase db = TagsDatabase.getInstance();
-                    boolean result = db.removeAllTagsForUser(uuid);
+                    boolean result = db.removeAllTagsForUser(uuid).isTruthy();
 
                     // Remove the selected tag
                     Tag currentSelected = db.getSelectedForUser(uuid);

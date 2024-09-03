@@ -6,30 +6,32 @@ import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.models.Tag;
 
+import co.killionrevival.killioncommons.database.models.ReturnCode;
+
 public interface CustomTagsAPI {
-    boolean giveUserTag(Player player, String tagId);
+    ReturnCode giveUserTag(Player player, String tagId);
 
-    boolean removeUserTag(Player player, String tagId);
+    ReturnCode removeUserTag(Player player, String tagId);
 
-    boolean removeAllUserTags(Player player);
+    ReturnCode removeAllUserTags(Player player);
 
     List<String> getUserTagIds(Player player);
 
-    boolean setUserSelectedTag(Player player, String tagId);
+    ReturnCode setUserSelectedTag(Player player, String tagId);
 
-    boolean removeUserSelectedTag(Player player);
+    ReturnCode removeUserSelectedTag(Player player);
 
     String getUserSelectedTagId(Player player);
 
     List<String> getAvailableTagIds();
 
-    boolean createTag(String pluginIdentifier, Tag newTag);
+    ReturnCode createTag(String pluginIdentifier, Tag newTag);
 
-    boolean deleteTag(String pluginIdentifier, String tagId);
+    ReturnCode deleteTag(String pluginIdentifier, String tagId);
 
-    boolean modifyTag(String pluginIdentifier, Tag newTag);
+    ReturnCode modifyTag(String pluginIdentifier, Tag newTag);
 
-    boolean ensureTag(String pluginIdentifier, Tag newTag);
+    ReturnCode ensureTag(String pluginIdentifier, Tag newTag);
 
     boolean tagExists(String tagId);
 

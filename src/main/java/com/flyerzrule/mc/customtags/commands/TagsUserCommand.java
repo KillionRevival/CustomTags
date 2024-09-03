@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.panels.TagsPanel;
@@ -18,8 +17,6 @@ public class TagsUserCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("taguser")) {
-            TagsConfig tagsConfig = TagsConfig.getInstance();
-
             if (args.length == 0) {
                 return false;
             }
@@ -33,10 +30,9 @@ public class TagsUserCommand implements CommandExecutor {
                     CustomTags.getMyLogger().sendDebug(
                             sender.getName() + " sent command " + cmd.getName() + " for player " + player.getName());
 
-                    List<Tag> tags = tagsConfig.getTags();
-
                     TagsDatabase db = TagsDatabase.getInstance();
                     List<Tag> ownedTags = db.getUserOwnedTags(player.getUniqueId().toString());
+                    List<Tag> tags = db.getAllTags();
 
                     new TagsPanel(pSender, player, tags, ownedTags).openOwned();
                     return true;

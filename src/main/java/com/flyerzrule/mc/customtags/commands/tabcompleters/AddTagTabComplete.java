@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.utils.Utils;
@@ -24,11 +23,10 @@ public class AddTagTabComplete implements TabCompleter {
                 suggestions = CustomTags.getPlugin().getServer().getOnlinePlayers().stream().map(ele -> ele.getName())
                         .collect(Collectors.toList());
             } else if (args.length == 2) {
-                TagsConfig tagsConfig = TagsConfig.getInstance();
                 TagsDatabase db = TagsDatabase.getInstance();
                 List<Tag> ownedTags = db.getUserOwnedTags(Bukkit.getPlayer(args[0]).getUniqueId().toString());
 
-                List<Tag> allTags = tagsConfig.getTags();
+                List<Tag> allTags = db.getAllTags();
 
                 suggestions = Utils.getDifferenceTags(allTags, ownedTags).stream().map(ele -> ele.getId())
                         .collect(Collectors.toList());

@@ -5,19 +5,20 @@ import java.util.stream.Collectors;
 
 import org.bukkit.entity.Player;
 
-import com.flyerzrule.mc.customtags.config.TagsConfig;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.models.TagUpdateMethod;
 import com.flyerzrule.mc.customtags.utils.PrefixUtils;
 
+import co.killionrevival.killioncommons.database.models.ReturnCode;
+
 public class API {
-    public static boolean giveUserTag(Player player, String tagId) {
+    public static ReturnCode giveUserTag(Player player, String tagId) {
         TagsDatabase db = TagsDatabase.getInstance();
         return db.giveUserTag(getUUID(player), tagId);
     }
 
-    public static boolean removeUserTag(Player player, String tagId) {
+    public static ReturnCode removeUserTag(Player player, String tagId) {
         TagsDatabase db = TagsDatabase.getInstance();
         Tag currentSelected = db.getSelectedForUser(getUUID(player));
         if (currentSelected != null) {
@@ -28,7 +29,7 @@ public class API {
         return db.removeUserTag(getUUID(player), tagId);
     }
 
-    public static boolean removeAllUserTags(Player player) {
+    public static ReturnCode removeAllUserTags(Player player) {
         TagsDatabase db = TagsDatabase.getInstance();
         Tag currentSelected = db.getSelectedForUser(getUUID(player));
         if (currentSelected != null) {
@@ -42,15 +43,14 @@ public class API {
         return db.getUserOwnedTags(getUUID(player)).stream().map(ele -> ele.getId()).collect(Collectors.toList());
     }
 
-    public static boolean setUserSelectedTag(Player player, String tagId) {
+    public static ReturnCode setUserSelectedTag(Player player, String tagId) {
         TagsDatabase db = TagsDatabase.getInstance();
-        TagsConfig tagsConfig = TagsConfig.getInstance();
-        Tag tag = tagsConfig.getTagById(tagId);
+        Tag tag = db.getTag(tagId);
         PrefixUtils.selectPrefix(player, tag.getTag());
         return db.selectTagForUser(getUUID(player), tagId);
     }
 
-    public static boolean removeUserSelectedTag(Player player) {
+    public static ReturnCode removeUserSelectedTag(Player player) {
         TagsDatabase db = TagsDatabase.getInstance();
         PrefixUtils.removePrefix(player);
         return db.unselectTagForUser(getUUID(player));
@@ -67,30 +67,41 @@ public class API {
     }
 
     public static List<String> getAvailableTagIds() {
-        TagsConfig tagsConfig = TagsConfig.getInstance();
-        return tagsConfig.getTagIds();
+        TagsDatabase db = TagsDatabase.getInstance();
+        return db.getAllTagIds();
     }
 
-    public static boolean createTag(String pluginIdentifier, Tag newTag) {
+    public static ReturnCode createTag(String pluginIdentifier, Tag newTag) {
         TagsDatabase db = TagsDatabase.getInstance();
         return db.createTag(newTag, TagUpdateMethod.PLUGIN, pluginIdentifier);
     }
 
-    public static boolean deleteTag(String pluginIdentifier, String tagId) {
+    public static ReturnCode deleteTag(String pluginIdentifier, String tagId) {
         TagsDatabase db = TagsDatabase.getInstance();
         return db.deleteTag(tagId, TagUpdateMethod.PLUGIN, pluginIdentifier);
     }
 
-    public static boolean modifyTag(String pluginIdentifier, Tag newTag) {
+    public static ReturnCode modifyTag(String pluginIdentifier, Tag newTag) {
         TagsDatabase db = TagsDatabase.getInstance();
         return db.modifyTag(newTag, TagUpdateMethod.PLUGIN, pluginIdentifier);
     }
 
-    public static boolean ensureTag(String pluginIdentifier, Tag newTag) {
+    public static ReturnCode ensureTag(String pluginIdentifier, Tag newTag) {
         TagsDatabase db = TagsDatabase.getInstance();
         if (!db.tagExists(newTag.getId())) {
             return db.createTag(newTag, TagUpdateMethod.PLUGIN, pluginIdentifier);
         }
+        return ReturnCode.ALREADY_EXISTS;
+    }
+
+    public static boolean tagExists(String tagId) {
+        TagsDatabase db = TagsDatabase.getInstance();
+        return db.tagExists(tagId);
+    }
+
+    public static Tag getTag(String tagId) {
+        TagsDatabase db = TagsDatabase.getInstance();
+        return db.getTag(tagId);
     }
 
     private static String getUUID(Player player) {

@@ -36,11 +36,6 @@ commands:
     usage: /<command> [username]
     permission: customtags.manage
     permission-message: You do not have permission to use this command.
-  tagreload:
-    description: Reload the tags.json file
-    usage: /<command>
-    permission: customtags.manage
-    permission-message: You do not have permission to use this command.
 permissions:
   customtags.view:
     description: Allows the player to view and set their tag
