@@ -12,6 +12,7 @@ import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.utils.PrefixUtils;
 import com.google.common.base.Objects;
 
+import co.killionrevival.killioncommons.database.models.ReturnCode;
 import xyz.xenondevs.invui.item.ItemProvider;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 import xyz.xenondevs.invui.item.impl.AbstractItem;
@@ -65,10 +66,10 @@ public class TagItem extends AbstractItem {
         TagsDatabase db = TagsDatabase.getInstance();
         if (clickType.isLeftClick() && this.selected && !this.locked) {
             // Tag clicked that was selected and not locked
-            boolean result = db.unselectTagForUser(this.player.getUniqueId().toString());
+            ReturnCode result = db.unselectTagForUser(this.player.getUniqueId().toString());
             CustomTags.getMyLogger().sendDebug(this.sender.getName() + " unselected tag " + this.tag.getId()
                     + " for user " + this.player.getName());
-            if (result) {
+            if (result == ReturnCode.SUCCESS) {
                 this.selected = false;
 
                 PrefixUtils.removePrefix(this.player);
