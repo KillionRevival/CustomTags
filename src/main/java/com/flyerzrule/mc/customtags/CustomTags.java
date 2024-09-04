@@ -1,9 +1,6 @@
 package com.flyerzrule.mc.customtags;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,12 +14,17 @@ import com.flyerzrule.mc.customtags.api.API;
 import com.flyerzrule.mc.customtags.api.CustomTagsAPI;
 import com.flyerzrule.mc.customtags.commands.AddAllTagsCommand;
 import com.flyerzrule.mc.customtags.commands.AddTagCommand;
+import com.flyerzrule.mc.customtags.commands.CreateTagCommand;
+import com.flyerzrule.mc.customtags.commands.DeleteTagCommand;
+import com.flyerzrule.mc.customtags.commands.ModifyTagCommand;
 import com.flyerzrule.mc.customtags.commands.RemoveAllTagsCommand;
 import com.flyerzrule.mc.customtags.commands.RemoveTagCommand;
 import com.flyerzrule.mc.customtags.commands.TagsCommand;
 import com.flyerzrule.mc.customtags.commands.TagsUserCommand;
 import com.flyerzrule.mc.customtags.commands.tabcompleters.AddTagTabComplete;
 import com.flyerzrule.mc.customtags.commands.tabcompleters.RemoveTagTabComplete;
+import com.flyerzrule.mc.customtags.commands.tabcompleters.TagCreateTabComplete;
+import com.flyerzrule.mc.customtags.commands.tabcompleters.TagIdTabComplete;
 import com.flyerzrule.mc.customtags.commands.tabcompleters.UsersTabComplete;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.listeners.ChatListener;
@@ -31,7 +33,7 @@ import com.flyerzrule.mc.customtags.models.Tag;
 
 import co.killionrevival.killioncommons.KillionUtilities;
 import co.killionrevival.killioncommons.database.models.ReturnCode;
-import co.killionrevival.killioncommons.util.ConsoleUtil;
+import co.killionrevival.killioncommons.util.console.ConsoleUtil;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.milkbowl.vault.chat.Chat;
@@ -41,7 +43,6 @@ import xyz.xenondevs.invui.gui.structure.Structure;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
 public class CustomTags extends JavaPlugin implements CustomTagsAPI {
-    private File configFile = new File(getDataFolder(), "tags.json");
     private static JavaPlugin plugin = null;
     private static Permission perms = null;
     private static Chat chat = null;
@@ -60,7 +61,6 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
         sc = (SimpleClans) Objects.requireNonNull(getServer().getPluginManager().getPlugin("SimpleClans"));
 
         ensureDataFolderExists();
-        ensureTagsConfigExists();
 
         saveDefaultConfig();
 
@@ -75,7 +75,7 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
         registerListeners();
         registerAPI();
 
-        logger.sendInfo("CustomTags has been enabled!");
+        logger.sendSuccess("CustomTags has been enabled!");
     }
 
     @Override
@@ -88,7 +88,7 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
                 logger.sendError("Failed to close connection to Database!");
             }
         }
-        logger.sendInfo("CustomTags has been disabled!");
+        logger.sendSuccess("CustomTags has been disabled!");
     }
 
     public static JavaPlugin getPlugin() {
@@ -155,21 +155,6 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
     }
 
-    private void ensureTagsConfigExists() {
-        if (!configFile.exists()) {
-            try (InputStream in = getResource("tags.json")) {
-                if (in != null) {
-                    Files.copy(in, configFile.toPath());
-                } else {
-                    logger.sendError("Default tags.json not found in resources!");
-                }
-            } catch (IOException e) {
-                logger.sendError("Error creating tags.json file!");
-                logger.sendError(e.getMessage());
-            }
-        }
-    }
-
     private void registerCommands() {
         this.getCommand("tags").setExecutor(new TagsCommand());
 
@@ -187,6 +172,15 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
         this.getCommand("tagremoveall").setExecutor(new RemoveAllTagsCommand());
         this.getCommand("tagremoveall").setTabCompleter(new UsersTabComplete());
+
+        this.getCommand("tagcreate").setExecutor(new CreateTagCommand());
+        this.getCommand("tagcreate").setTabCompleter(new TagCreateTabComplete());
+
+        this.getCommand("tagmodify").setExecutor(new ModifyTagCommand());
+        // this.getCommand("tagmodify").setTabCompleter(new TagIdTabComplete());
+
+        this.getCommand("tagdelete").setExecutor(new DeleteTagCommand());
+        // this.getCommand("tagdelete").setTabCompleter(new TagIdTabComplete());
     }
 
     private void registerListeners() {

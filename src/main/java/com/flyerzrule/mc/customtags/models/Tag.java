@@ -75,7 +75,7 @@ public class Tag {
     }
 
     public void setMaterial(String itemId) {
-        this.material = Material.getMaterial(itemId.split(":")[1].toUpperCase());
+        this.material = Material.matchMaterial(itemId);
     }
 
     public void setMaterial(Material item) {

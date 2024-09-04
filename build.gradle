@@ -38,7 +38,7 @@ repositories {
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT'
-    compileOnly 'co.killionrevival:killioncommons:2.0.1-SNAPSHOT'
+    compileOnly 'co.killionrevival:killioncommons:3.0.4-SNAPSHOT'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
     compileOnly 'net.md-5:bungeecord-chat:1.20-R0.2'
     compileOnly 'net.luckperms:api:5.4'

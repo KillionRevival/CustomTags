@@ -18,17 +18,17 @@ public class TagsDatabase extends DatabaseConnection {
     private static TagsDatabase instance;
 
     private TagsDatabase() {
-        super(CustomTags.getKillionUtilities().getConsoleUtil());
+        super(CustomTags.getMyLogger());
 
         boolean failure = false;
-        failure |= createSchemaIfNotExists("custom_tags").isTruthy();
-        failure |= createOwnedTagsTable().isTruthy();
-        failure |= createSelectedTagsTable().isTruthy();
-        failure |= createTagsTable().isTruthy();
-        failure |= createUpdateHistoryTable().isTruthy();
+        failure |= !createSchemaIfNotExists("custom_tags").isTruthy();
+        failure |= !createOwnedTagsTable().isTruthy();
+        failure |= !createSelectedTagsTable().isTruthy();
+        failure |= !createTagsTable().isTruthy();
+        failure |= !createUpdateHistoryTable().isTruthy();
 
         if (failure) {
-            CustomTags.getMyLogger().sendError("Failed to setup database!");
+            this.logger.sendError("Failed to setup database!");
         }
     }
 
@@ -53,7 +53,7 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeQuery(query);
             return ReturnCode.SUCCESS;
         } catch (Exception e) {
-            e.printStackTrace();
+            this.logger.sendError("Failed to create owned tags table", e);
         }
         return ReturnCode.FAILURE;
     }
@@ -64,18 +64,18 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeQuery(query);
             return ReturnCode.SUCCESS;
         } catch (Exception e) {
-            e.printStackTrace();
+            this.logger.sendError("Failed to create selected tags table", e);
         }
         return ReturnCode.FAILURE;
     }
 
     private ReturnCode createTagsTable() {
-        String query = "CREATE TABLE IF NO EXISTS custom_tags.tags (tagid TEXT PRIMARY KEY, name TEXT, tag TEXT, description TEXT, material TEXT, obtainable BOOLEAN, added_date TIMESTAMPTZ DEFAULT NOW())";
+        String query = "CREATE TABLE IF NOT EXISTS custom_tags.tags (tagid TEXT PRIMARY KEY, name TEXT, tag TEXT, description TEXT, material TEXT, obtainable BOOLEAN, added_date TIMESTAMPTZ DEFAULT NOW())";
         try {
             this.executeQuery(query);
             return ReturnCode.SUCCESS;
         } catch (Exception e) {
-            e.printStackTrace();
+            this.logger.sendError("Failed to create tags table", e);
         }
         return ReturnCode.FAILURE;
     }
@@ -83,35 +83,26 @@ public class TagsDatabase extends DatabaseConnection {
     private ReturnCode createUpdateHistoryTable() {
         this.createUpdateTypeEnum();
         this.createUpdateMethodEnum();
-        String query = "CREATE TABLE IF NO EXISTS custom_tags.update_history (updateId SERIAL PRIMARY KEY, type update_type, tagid TEXT, date TIMESTAMPTZ DEFAULT NOW(), method update_method, actor TEXT, old TEXT, new TEXT)";
+        String query = "CREATE TABLE IF NOT EXISTS custom_tags.update_history (updateId SERIAL PRIMARY KEY, update_type custom_tags.update_type, tagid TEXT, date TIMESTAMPTZ DEFAULT NOW(), update_method custom_tags.update_method, actor TEXT, old TEXT, new TEXT)";
         try {
             this.executeQuery(query);
             return ReturnCode.SUCCESS;
         } catch (Exception e) {
-            e.printStackTrace();
+            this.logger.sendError("Failed to create update history table", e);
         }
         return ReturnCode.FAILURE;
     }
 
     public List<Tag> getUserOwnedTags(String userId) {
         String query = "SELECT tagid FROM custom_tags.owned_tags WHERE userid = ?;";
-        ResultSet rs;
-        try {
-            rs = this.fetchQuery(query, userId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-
         List<Tag> tags = new ArrayList<>();
-        try {
+        try (ResultSet rs = this.fetchQuery(query, userId)) {
             while (rs != null && rs.next()) {
                 String tagId = rs.getString("tagid");
                 tags.add(this.getTag(tagId));
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error getting tagId");
+            this.logger.sendError("Error getting tagId", e);
         }
         return tags;
     }
@@ -122,7 +113,7 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeUpdate(query, userId, tagId);
             return ReturnCode.SUCCESS;
         } catch (Exception e) {
-            e.printStackTrace();
+            this.logger.sendError("Failed to give user tag", e);
         }
         return ReturnCode.FAILURE;
     }
@@ -133,7 +124,7 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeUpdate(query, userId, tagId);
             return ReturnCode.SUCCESS;
         } catch (Exception e) {
-            e.printStackTrace();
+            this.logger.sendError("Failed to remove user tag", e);
         }
         return ReturnCode.FAILURE;
     }
@@ -144,7 +135,7 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeUpdate(query, userId);
             return ReturnCode.SUCCESS;
         } catch (Exception e) {
-            e.printStackTrace();
+            this.logger.sendError("Failed to remove all tags for user", e);
         }
         return ReturnCode.FAILURE;
     }
@@ -155,7 +146,7 @@ public class TagsDatabase extends DatabaseConnection {
             this.executeUpdate(query, userId, tagId);
             return ReturnCode.SUCCESS;
         } catch (Exception e) {
-            e.printStackTrace();
+            this.logger.sendError("Failed to select tag for user", e);
         }
         return ReturnCode.FAILURE;
     }
@@ -167,7 +158,7 @@ public class TagsDatabase extends DatabaseConnection {
             PrefixUtils.removeAndSetPrefix(userId);
             return ReturnCode.SUCCESS;
         } catch (Exception e) {
-            e.printStackTrace();
+            this.logger.sendError("Failed to unselect tag for user", e);
         }
         return ReturnCode.FAILURE;
     }
@@ -175,22 +166,13 @@ public class TagsDatabase extends DatabaseConnection {
     public Tag getSelectedForUser(String userId) {
         String query = "SELECT tagid FROM custom_tags.selected_tags WHERE userid = ?;";
 
-        ResultSet rs;
-        try {
-            rs = this.fetchQuery(query, userId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        try {
+        try (ResultSet rs = this.fetchQuery(query, userId);) {
             if (rs != null && rs.next()) {
                 String tagId = rs.getString("tagid");
                 return this.getTag(tagId);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error getting tagId");
+            this.logger.sendError("Error getting tagId", e);
         }
         return null;
     }
@@ -202,8 +184,7 @@ public class TagsDatabase extends DatabaseConnection {
                 this.executeUpdate(query, newTag.getId(), newTag.getName(), newTag.getTag(), newTag.getDescription(),
                         newTag.getMaterial().name(), newTag.getObtainable());
             } catch (Exception e) {
-                e.printStackTrace();
-                CustomTags.getMyLogger().sendError("ERROR Creating tag " + newTag.getId());
+                this.logger.sendError("ERROR Creating tag " + newTag.getId(), e);
                 return ReturnCode.FAILURE;
             }
         } else {
@@ -220,17 +201,16 @@ public class TagsDatabase extends DatabaseConnection {
             try {
                 this.executeUpdate(query, tagId);
             } catch (Exception e) {
-                e.printStackTrace();
-                CustomTags.getMyLogger().sendError("ERROR Deleting tag " + tagId);
+                this.logger.sendError("ERROR Deleting tag " + tagId, e);
                 return ReturnCode.FAILURE;
             }
 
             return this.addUpdateHistoryEntry(TagUpdateType.DELETE, tagId, updateMethod, actor, oldTag, null);
         } else {
-            CustomTags.getMyLogger()
+            this.logger
                     .sendError("ERROR Cannot delete tag " + tagId + " since it does not exist");
+            return ReturnCode.NOT_EXIST;
         }
-        return ReturnCode.NOT_EXIST;
     }
 
     public ReturnCode modifyTag(Tag newTag, TagUpdateMethod method, String actor) {
@@ -240,31 +220,26 @@ public class TagsDatabase extends DatabaseConnection {
             try {
                 this.executeUpdate(query, newTag.getName(), newTag.getTag(), newTag.getDescription(),
                         newTag.getMaterial().name(), newTag.getObtainable(), newTag.getId());
-                ;
             } catch (Exception e) {
-                e.printStackTrace();
-                CustomTags.getMyLogger().sendError("ERROR Modifying tag " + newTag.getId());
+                this.logger.sendError("ERROR Modifying tag " + newTag.getId(), e);
                 return ReturnCode.FAILURE;
             }
 
             return this.addUpdateHistoryEntry(TagUpdateType.MODIFY, newTag.getId(), method, actor, oldTag, newTag);
         } else {
-            CustomTags.getMyLogger()
-                    .sendError("ERROR Cannot modify tag " + newTag.getId() + " since it does not exist");
+            this.logger.sendError("ERROR Cannot modify tag " + newTag.getId() + " since it does not exist");
+
         }
-        return ReturnCode.FAILURE;
+        return ReturnCode.NOT_EXIST;
     }
 
     public boolean tagExists(String tagId) {
         String query = "SELECT 1 FROM custom_tags.tags WHERE tagid = ?;";
 
-        ResultSet rs;
-        try {
-            rs = this.fetchQuery(query, tagId);
+        try (ResultSet rs = this.fetchQuery(query, tagId)) {
             return rs.next();
         } catch (Exception e) {
-            e.printStackTrace();
-            CustomTags.getMyLogger().sendError("ERROR Checking if tag " + tagId + " exists");
+            this.logger.sendError("ERROR Checking if tag " + tagId + " exists", e);
         }
         return false;
     }
@@ -272,16 +247,7 @@ public class TagsDatabase extends DatabaseConnection {
     public Tag getTag(String id) {
         String query = "SELECT * FROM custom_tags.tags WHERE tagid = ?;";
 
-        ResultSet rs;
-        try {
-            rs = this.fetchQuery(query, id);
-        } catch (Exception e) {
-            e.printStackTrace();
-            CustomTags.getMyLogger().sendError("ERROR Getting tag " + id);
-            return null;
-        }
-
-        try {
+        try (ResultSet rs = this.fetchQuery(query, id)) {
             if (rs != null && rs.next()) {
                 String tagId = rs.getString("tagid");
                 String name = rs.getString("name");
@@ -290,54 +256,35 @@ public class TagsDatabase extends DatabaseConnection {
                 String material = rs.getString("material");
                 boolean obtainable = rs.getBoolean("obtainable");
                 Timestamp createDate = rs.getTimestamp("added_date");
+
                 return new Tag(tagId, name, tag, description, material, obtainable, createDate);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error getting tagId");
+            this.logger.sendError("Error getting tagId " + id, e);
         }
         return null;
     }
 
     public List<String> getAllTagIds() {
         String query = "SELECT tagid FROM custom_tags.tags;";
-
-        ResultSet rs;
-        try {
-            rs = this.fetchQuery(query);
-        } catch (Exception e) {
-            e.printStackTrace();
-            CustomTags.getMyLogger().sendError("ERROR Getting all tagIds");
-            return new ArrayList<>();
-        }
-
         List<String> tagIds = new ArrayList<>();
-        try {
+
+        try (ResultSet rs = this.fetchQuery(query)) {
             while (rs != null && rs.next()) {
                 String tagId = rs.getString("tagid");
                 tagIds.add(tagId);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error getting tagId");
+            this.logger.sendError("Error getting tagId", e);
         }
         return tagIds;
     }
 
     public List<Tag> getAllTags() {
         String query = "SELECT * FROM custom_tags.tags;";
-
-        ResultSet rs;
-        try {
-            rs = this.fetchQuery(query);
-        } catch (Exception e) {
-            e.printStackTrace();
-            CustomTags.getMyLogger().sendError("ERROR Getting all tags");
-            return new ArrayList<>();
-        }
-
         List<Tag> tags = new ArrayList<>();
-        try {
+
+        try (ResultSet rs = this.fetchQuery(query)) {
             while (rs != null && rs.next()) {
                 String tagId = rs.getString("tagid");
                 String name = rs.getString("name");
@@ -349,8 +296,7 @@ public class TagsDatabase extends DatabaseConnection {
                 tags.add(new Tag(tagId, name, tag, description, material, obtainable, createDate));
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error getting tagId");
+            this.logger.sendError("Error getting tagId", e);
         }
         return tags;
     }
@@ -359,7 +305,7 @@ public class TagsDatabase extends DatabaseConnection {
             Tag oldTag, Tag newTag) {
         final String emptyVersion = "N/A";
 
-        String query = "INSERT INTO custom_tags.update_history (type, tagid, method, actor, old, new) VALUES (?, ?, ?, ?, ?, ?);";
+        String query = "INSERT INTO custom_tags.update_history (update_type, tagid, update_method, actor, old, new) VALUES (?::custom_tags.update_type, ?, ?::custom_tags.update_method, ?, ?, ?);";
 
         String oldTagStr = "";
         String newTagStr = "";
@@ -367,13 +313,13 @@ public class TagsDatabase extends DatabaseConnection {
         List<String> oldTagChanges = new ArrayList<>();
         List<String> newTagChanges = new ArrayList<>();
 
-        if (oldTag == null) {
+        if (oldTag == null && newTag != null) {
             oldTagStr = emptyVersion;
             newTagStr = newTag.toString();
-        } else if (newTag == null) {
+        } else if (newTag == null && oldTag != null) {
             oldTagStr = oldTag.toString();
             newTagStr = emptyVersion;
-        } else {
+        } else if (oldTag != null && newTag != null) {
             if (!this.isEqual(oldTag.getName(), newTag.getName())) {
                 oldTagChanges.add("Name: " + oldTag.getName());
                 newTagChanges.add("Name: " + newTag.getName());
@@ -404,11 +350,10 @@ public class TagsDatabase extends DatabaseConnection {
         }
 
         try {
-            this.executeUpdate(query, type.toString(), tagId, method.toString(), actor, oldTagStr, newTagStr);
+            this.executeUpdate(query, type.name(), tagId, method.name(), actor, oldTagStr, newTagStr);
             return ReturnCode.SUCCESS;
         } catch (Exception e) {
-            e.printStackTrace();
-            CustomTags.getMyLogger().sendError("ERROR Creating history entry for tag " + tagId);
+            this.logger.sendError("ERROR Creating history entry for tag " + tagId, e);
         }
         return ReturnCode.FAILURE;
     }

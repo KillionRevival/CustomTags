@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
@@ -71,12 +72,10 @@ public class ChatListener implements Listener {
         TextComponent prefixComponent = Component.text(" " + prefix.replace('&', '§'));
 
         // Create tag hover text component
-        TextComponent tagComponent = null;
+        TextComponent tagComponent = Component.text(selectedTag == null ? "" : selectedTag.getTag());
         if (selectedTag != null) {
             String tagHoverContent = String.format("%s\n%s\n%s", selectedTag.getName(), selectedTag.getDescription(),
                     (selectedTag.getObtainable() == true) ? "§aObtainable" : "§4Not-Obtainable");
-
-            tagComponent = Component.text(selectedTag.getTag());
             tagComponent.hoverEvent(Component.text(tagHoverContent));
         }
 
@@ -94,10 +93,15 @@ public class ChatListener implements Listener {
         TextComponent messageComponent = Component.text(
                 messageColor + LegacyComponentSerializer.legacySection().serialize(event.message()) + "§r");
 
-        // Create and call the custom component message event
-        CustomComponentMessageEvent customComponentMessageEvent = new CustomComponentMessageEvent(player,
-                List.of(prefixComponent, tagComponent, usernameComponent, messageComponent));
-        Bukkit.getPluginManager().callEvent(customComponentMessageEvent);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                // Create and call the custom component message event
+                CustomComponentMessageEvent customComponentMessageEvent = new CustomComponentMessageEvent(player,
+                        List.of(prefixComponent, tagComponent, usernameComponent, messageComponent));
+                Bukkit.getPluginManager().callEvent(customComponentMessageEvent);
+            }
+        }.runTaskAsynchronously(CustomTags.getPlugin()); // Run the task asynchronously
 
         // Cancel the original event
         event.setCancelled(true);

@@ -27,13 +27,28 @@ commands:
     permission: customtags.manage
     permission-message: You do not have permission to use this command.
   tagremove:
-    description: Remove a tag fom a player's account
+    description: Remove a tag from a player's account
     usage: /<command> [username] [tagId]
     permission: customtags.manage
     permission-message: You do not have permission to use this command.
   tagremoveall:
-    description: Remove all tags fom a player's account
+    description: Remove all tags from a player's account
     usage: /<command> [username]
+    permission: customtags.manage
+    permission-message: You do not have permission to use this command.
+  tagcreate:
+    description: Create a new tag
+    usage: /<command> [tagId] [tag] [material] [obtainable] "[name]" "[description]"
+    permission: customtags.manage
+    permission-message: You do not have permission to use this command.
+  tagdelete:
+    description: Delete a tag
+    usage: /<command> [tagId]
+    permission: customtags.manage
+    permission-message: You do not have permission to use this command.
+  tagmodify:
+    description: Modify a tag
+    usage: /<command> [tagId] [tag] [material] [obtainable] "[name]" "[description]"
     permission: customtags.manage
     permission-message: You do not have permission to use this command.
 permissions:

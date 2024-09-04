@@ -1,3 +1,2 @@
 plugin-prefix: "&8[&3CustomTags&8] &r"
-
-debug-mode: false
+log-level: INFO
