@@ -5,11 +5,12 @@ plugins {
 }
 
 group = 'com.flyerzrule.mc.customtags'
-version = '1.6.3'
-def javaVersion = JavaVersion.VERSION_17
+version = '1.7'
+def javaVersion = JavaVersion.VERSION_21
 def encoding = 'UTF-8'
 
 repositories {
+    mavenLocal()
     gradlePluginPortal()
     mavenCentral()
     maven {
@@ -45,14 +46,14 @@ repositories {
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
-    compileOnly 'co.killionrevival:killioncommons:1.1.0-SNAPSHOT'
-    compileOnly 'org.kif:reincarceration:1.0.10'
+    compileOnly 'co.killionrevival:killioncommons:3.1-SNAPSHOT'
     shadow 'xyz.xenondevs.invui:invui:1.33'
     shadow 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
     compileOnly 'net.md-5:bungeecord-chat:1.20-R0.2'
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.19.2'
+    compileOnly 'org.kif:reincarceration:1.0.14'
 }
 
 java {

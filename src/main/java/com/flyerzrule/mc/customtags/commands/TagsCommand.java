@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
+import com.flyerzrule.mc.customtags.database.TagsDao;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.panels.TagsPanel;
 
@@ -27,7 +27,7 @@ public class TagsCommand implements CommandExecutor {
 
                 List<Tag> tags = tagsConfig.getTags();
 
-                TagsDatabase db = TagsDatabase.getInstance();
+                TagsDao db = TagsDao.getInstance();
                 List<Tag> ownedTags = db.getUserOwnedTags(player.getUniqueId().toString());
 
                 new TagsPanel(player, player, tags, ownedTags).openOwned();

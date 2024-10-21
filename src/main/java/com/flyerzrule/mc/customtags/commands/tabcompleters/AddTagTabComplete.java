@@ -11,7 +11,7 @@ import org.bukkit.command.TabCompleter;
 
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
+import com.flyerzrule.mc.customtags.database.TagsDao;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.utils.Utils;
 
@@ -25,7 +25,7 @@ public class AddTagTabComplete implements TabCompleter {
                         .collect(Collectors.toList());
             } else if (args.length == 2) {
                 TagsConfig tagsConfig = TagsConfig.getInstance();
-                TagsDatabase db = TagsDatabase.getInstance();
+                TagsDao db = TagsDao.getInstance();
                 List<Tag> ownedTags = db.getUserOwnedTags(Bukkit.getPlayer(args[0]).getUniqueId().toString());
 
                 List<Tag> allTags = tagsConfig.getTags();

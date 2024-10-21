@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
+import com.flyerzrule.mc.customtags.database.TagsDao;
 
 public class AddTagCommand implements CommandExecutor {
 
@@ -27,7 +27,7 @@ public class AddTagCommand implements CommandExecutor {
                             sender.getName() + " sent command " + cmd.getName() + " for player " + player.getName()
                                     + " and tag " + tagId);
                     String uuid = player.getUniqueId().toString();
-                    TagsDatabase db = TagsDatabase.getInstance();
+                    TagsDao db = TagsDao.getInstance();
                     boolean result = db.giveUserTag(uuid, tagId);
                     if (result) {
                         CustomTags.getMyLogger()

@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
+import com.flyerzrule.mc.customtags.database.TagsDao;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.utils.Utils;
 
@@ -31,7 +31,7 @@ public class AddAllTagsCommand implements CommandExecutor {
                     CustomTags.getMyLogger().sendDebug(
                             sender.getName() + " sent command " + cmd.getName() + " for player " + player.getName());
                     String uuid = player.getUniqueId().toString();
-                    TagsDatabase db = TagsDatabase.getInstance();
+                    TagsDao db = TagsDao.getInstance();
                     TagsConfig tagsConfig = TagsConfig.getInstance();
 
                     List<Tag> allTags = tagsConfig.getTags();

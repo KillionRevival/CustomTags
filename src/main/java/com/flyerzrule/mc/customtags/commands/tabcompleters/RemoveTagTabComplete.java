@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
+import com.flyerzrule.mc.customtags.database.TagsDao;
 import com.flyerzrule.mc.customtags.models.Tag;
 
 public class RemoveTagTabComplete implements TabCompleter {
@@ -22,7 +22,7 @@ public class RemoveTagTabComplete implements TabCompleter {
                 suggestions = CustomTags.getPlugin().getServer().getOnlinePlayers().stream().map(ele -> ele.getName())
                         .collect(Collectors.toList());
             } else if (args.length == 2) {
-                TagsDatabase db = TagsDatabase.getInstance();
+                TagsDao db = TagsDao.getInstance();
                 List<Tag> ownedTags = db.getUserOwnedTags(Bukkit.getPlayer(args[0]).getUniqueId().toString());
 
                 suggestions = ownedTags.stream().map(ele -> ele.getId())

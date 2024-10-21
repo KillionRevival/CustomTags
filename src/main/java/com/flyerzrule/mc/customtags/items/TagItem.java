@@ -7,7 +7,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
+import com.flyerzrule.mc.customtags.database.TagsDao;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.utils.PrefixUtils;
 import com.google.common.base.Objects;
@@ -62,7 +62,7 @@ public class TagItem extends AbstractItem {
 
     @Override
     public void handleClick(@NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent event) {
-        TagsDatabase db = TagsDatabase.getInstance();
+        TagsDao db = TagsDao.getInstance();
         if (clickType.isLeftClick() && this.selected && !this.locked) {
             // Tag clicked that was selected and not locked
             boolean result = db.unselectTagForUser(this.player.getUniqueId().toString());

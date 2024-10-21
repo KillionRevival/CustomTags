@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
+import com.flyerzrule.mc.customtags.database.TagsDao;
 import com.flyerzrule.mc.customtags.items.ScrollDownItem;
 import com.flyerzrule.mc.customtags.items.ScrollUpItem;
 import com.flyerzrule.mc.customtags.items.TagItem;
@@ -34,7 +34,7 @@ public class TagsPanel {
         this.player = player;
         this.sender = sender;
 
-        TagsDatabase db = TagsDatabase.getInstance();
+        TagsDao db = TagsDao.getInstance();
         Tag selectedTag = db.getSelectedForUser(this.player.getUniqueId().toString());
         final String selectedTagId = (selectedTag == null) ? "" : selectedTag.getId();
 

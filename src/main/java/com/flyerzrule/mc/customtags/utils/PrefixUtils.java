@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
+import com.flyerzrule.mc.customtags.database.TagsDao;
 import com.flyerzrule.mc.customtags.models.Tag;
 
 import net.luckperms.api.model.user.User;
@@ -50,7 +50,7 @@ public class PrefixUtils {
     public static void removeAndSetPrefix(Player player) {
         removePrefix(player);
 
-        TagsDatabase db = TagsDatabase.getInstance();
+        TagsDao db = TagsDao.getInstance();
         Tag selectedTag = db.getSelectedForUser(player.getUniqueId().toString());
         if (selectedTag != null) {
             selectPrefix(player, selectedTag.getTag());

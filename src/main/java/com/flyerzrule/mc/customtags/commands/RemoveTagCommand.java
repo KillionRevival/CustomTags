@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
+import com.flyerzrule.mc.customtags.database.TagsDao;
 import com.flyerzrule.mc.customtags.models.Tag;
 
 public class RemoveTagCommand implements CommandExecutor {
@@ -29,7 +29,7 @@ public class RemoveTagCommand implements CommandExecutor {
                                     + " and tag " + tagId);
 
                     String uuid = player.getUniqueId().toString();
-                    TagsDatabase db = TagsDatabase.getInstance();
+                    TagsDao db = TagsDao.getInstance();
                     boolean result = db.removeUserTag(uuid, tagId);
 
                     // If the removed tag was selected, unselect it

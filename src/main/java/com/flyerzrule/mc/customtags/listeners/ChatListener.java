@@ -10,7 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
+import com.flyerzrule.mc.customtags.database.TagsDao;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.utils.PrefixUtils;
 
@@ -64,7 +64,7 @@ public class ChatListener implements Listener {
         playerColor = playerColor.replace('&', '§');
         messageColor = messageColor.replace('&', '§');
 
-        TagsDatabase db = TagsDatabase.getInstance();
+        TagsDao db = TagsDao.getInstance();
         Tag selectedTag = db.getSelectedForUser(player.getUniqueId().toString());
 
         // Create the prefix component
