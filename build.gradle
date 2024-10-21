@@ -53,7 +53,7 @@ dependencies {
     compileOnly 'net.md-5:bungeecord-chat:1.20-R0.2'
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.19.2'
-    compileOnly 'org.kif:reincarceration:1.0.14'
+    compileOnly 'org.kif:reincarceration:1.1-SNAPSHOT'
 }
 
 java {
