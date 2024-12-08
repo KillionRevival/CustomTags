@@ -124,8 +124,10 @@ public class TagsDao extends DataAccessObject<Tag> {
         String query = "SELECT tagid FROM custom_tags.selected_tags WHERE userid = ?;";
 
         try {
-            return fetchQuery(query, userId).getFirst();
-        } catch (Exception e) {
+            final List<Tag> tags = fetchQuery(query, userId);
+            return tags != null ? tags.getFirst() : null;
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return null;
         }
