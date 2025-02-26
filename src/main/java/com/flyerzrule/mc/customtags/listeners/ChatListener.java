@@ -35,6 +35,9 @@ public class ChatListener implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChat(AsyncChatEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         Player player = event.getPlayer();
         String prefix = PrefixUtils.removeTagFromPrefix(player);
 

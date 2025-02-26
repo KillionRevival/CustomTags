@@ -57,7 +57,7 @@ public class TagsDao extends DataAccessObject<Tag> {
     public List<Tag> getUserOwnedTags(String userId) {
         String query = "SELECT tagid FROM custom_tags.owned_tags WHERE userid = ?;";
         try {
-            return fetchQuery(query);
+            return fetchQuery(query, userId);
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -125,7 +125,7 @@ public class TagsDao extends DataAccessObject<Tag> {
 
         try {
             final List<Tag> tags = fetchQuery(query, userId);
-            return tags != null ? tags.getFirst() : null;
+            return tags != null && !tags.isEmpty() ? tags.getFirst() : null;
         }
         catch (Exception e) {
             e.printStackTrace();
