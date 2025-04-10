@@ -1,13 +1,14 @@
 package com.flyerzrule.mc.customtags.panels;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.flyerzrule.mc.customtags.database.SelectedTagsDao;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.items.ScrollDownItem;
 import com.flyerzrule.mc.customtags.items.ScrollUpItem;
 import com.flyerzrule.mc.customtags.items.TagItem;
@@ -26,15 +27,15 @@ public class TagsPanel {
     private final Player sender;
     private final Player player;
 
-    private Gui ownedGui;
-    private Gui allGui;
+    private final Gui ownedGui;
+    private final Gui allGui;
     private Window window;
 
     public TagsPanel(Player sender, Player player, List<Tag> allTags, List<Tag> ownedTags) {
         this.player = player;
         this.sender = sender;
 
-        TagsDatabase db = TagsDatabase.getInstance();
+        SelectedTagsDao db = SelectedTagsDao.getInstance();
         Tag selectedTag = db.getSelectedForUser(this.player.getUniqueId().toString());
         final String selectedTagId = (selectedTag == null) ? "" : selectedTag.getId();
 
@@ -49,14 +50,14 @@ public class TagsPanel {
                 })
                 .collect(Collectors.toList());
         ownedItemManager.setItems(ownedTagItems);
-        List<Item> ownedItems = ownedTagItems.stream().collect(Collectors.toList());
+        List<Item> ownedItems = new ArrayList<>(ownedTagItems);
 
         TagItemManager allItemManager = new TagItemManager();
         List<TagItem> allTagItems = allTags.stream()
                 .map(ele -> new TagItem(allItemManager, sender, player, ele, false, true))
                 .collect(Collectors.toList());
         allItemManager.setItems(allTagItems);
-        List<Item> allItems = allTagItems.stream().collect(Collectors.toList());
+        List<Item> allItems = new ArrayList<>(allTagItems);
 
         this.ownedGui = ScrollGui.items().setStructure(
                 "x x x x x x x x u",

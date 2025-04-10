@@ -2,13 +2,12 @@ package com.flyerzrule.mc.customtags.utils;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+import com.flyerzrule.mc.customtags.database.SelectedTagsDao;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
 
 import net.luckperms.api.model.user.User;
@@ -39,7 +38,7 @@ public class PrefixUtils {
         TagsConfig tagsConfig = TagsConfig.getInstance();
         Chat chat = CustomTags.getChat();
 
-        List<String> allTags = tagsConfig.getTags().stream().map(ele -> ele.getTag()).collect(Collectors.toList());
+        List<String> allTags = tagsConfig.getTags().stream().map(Tag::getTag).toList();
         String prefix = chat.getPlayerPrefix(player);
         for (String tag : allTags) {
             prefix = prefix.replace(tag + "§r", "");
@@ -50,7 +49,7 @@ public class PrefixUtils {
     public static void removeAndSetPrefix(Player player) {
         removePrefix(player);
 
-        TagsDatabase db = TagsDatabase.getInstance();
+        SelectedTagsDao db = SelectedTagsDao.getInstance();
         Tag selectedTag = db.getSelectedForUser(player.getUniqueId().toString());
         if (selectedTag != null) {
             selectPrefix(player, selectedTag.getTag());

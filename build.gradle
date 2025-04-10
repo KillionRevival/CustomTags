@@ -6,15 +6,18 @@ plugins {
 
 group = 'com.flyerzrule.mc.customtags'
 version = '1.6.3'
-def javaVersion = JavaVersion.VERSION_17
+
+def javaVersion = JavaVersion.VERSION_21
 def encoding = 'UTF-8'
+def paperVersion = '1.21.4-R0.1-SNAPSHOT'
+def mcVersion = '1.21.4'
 
 repositories {
     gradlePluginPortal()
     mavenCentral()
     maven {
         name 'papermc-repo'
-        url 'https://papermc.io/repo/repository/maven-public/'
+        url 'https://repo.papermc.io/repository/maven-public/'
     }
     maven {
         name 'xenondevs'
@@ -24,15 +27,15 @@ repositories {
         url 'https://jitpack.io' 
     }
     maven {
-        url 'https://maven.pkg.github.com/KillionRevival/KillionCommons'
+        name 'roinujnosde-repo'
+        url 'https://repo.roinujnosde.me/releases/'
+    }
+    maven {
+        url "https://maven.pkg.github.com/KillionRevival/KillionCommons"
         credentials {
             username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
             password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
         }
-    }
-    maven {
-        name 'roinujnosde-repo'
-        url 'https://repo.roinujnosde.me/releases/'
     }
     maven {
         url 'https://maven.pkg.github.com/KillionRevival/Reincarceration'
@@ -44,15 +47,19 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
-    compileOnly 'co.killionrevival:killioncommons:1.1.0-SNAPSHOT'
-    compileOnly 'org.kif:reincarceration:1.0.10'
-    shadow 'xyz.xenondevs.invui:invui:1.33'
+    compileOnly "io.papermc.paper:paper-api:${paperVersion}"
+    compileOnly 'co.killionrevival:killioncommons:4.1.1-SNAPSHOT'
+    compileOnly 'org.kif:reincarceration:1.1'
+
+    shadow 'xyz.xenondevs.invui:invui:1.43'
     shadow 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
-    compileOnly 'net.md-5:bungeecord-chat:1.20-R0.2'
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.19.2'
+
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
 }
 
 java {
@@ -66,7 +73,7 @@ tasks.withType(JavaCompile) {
 
 tasks.processResources {
     filesMatching('plugin.yml') {
-        expand version: project.version
+        expand (version: project.version, mcVersion: mcVersion)
     }
 }
 

@@ -1,5 +1,7 @@
 package com.flyerzrule.mc.customtags.commands;
 
+import com.flyerzrule.mc.customtags.database.OwnedTagsDao;
+import com.flyerzrule.mc.customtags.database.SelectedTagsDao;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -7,8 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
+import org.jetbrains.annotations.NotNull;
 
 public class RemoveAllTagsCommand implements CommandExecutor {
 
@@ -16,7 +18,7 @@ public class RemoveAllTagsCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, String @NotNull [] args) {
         if (cmd.getName().equalsIgnoreCase("tagremoveall")) {
             if (args.length == 1) {
                 String username = args[0];
@@ -27,13 +29,14 @@ public class RemoveAllTagsCommand implements CommandExecutor {
                             sender.getName() + " sent command " + cmd.getName() + " for player " + player.getName());
 
                     String uuid = player.getUniqueId().toString();
-                    TagsDatabase db = TagsDatabase.getInstance();
-                    boolean result = db.removeAllTagsForUser(uuid);
+                    OwnedTagsDao ownedTagsDao = OwnedTagsDao.getInstance();
+                    SelectedTagsDao selectedTagsDao = SelectedTagsDao.getInstance();
+                    boolean result = ownedTagsDao.removeAllTagsForUser(uuid);
 
                     // Remove the selected tag
-                    Tag currentSelected = db.getSelectedForUser(uuid);
+                    Tag currentSelected = selectedTagsDao.getSelectedForUser(uuid);
                     if (currentSelected != null) {
-                        db.unselectTagForUser(uuid);
+                        selectedTagsDao.unselectTagForUser(uuid);
                     }
 
                     if (result) {

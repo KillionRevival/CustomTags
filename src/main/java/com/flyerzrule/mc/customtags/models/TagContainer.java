@@ -1,15 +1,10 @@
 package com.flyerzrule.mc.customtags.models;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class TagContainer {
     private List<Tag> tags;
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
 }

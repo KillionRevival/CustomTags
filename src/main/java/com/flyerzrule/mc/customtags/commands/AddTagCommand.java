@@ -1,5 +1,6 @@
 package com.flyerzrule.mc.customtags.commands;
 
+import com.flyerzrule.mc.customtags.database.OwnedTagsDao;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -7,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
+import org.jetbrains.annotations.NotNull;
 
 public class AddTagCommand implements CommandExecutor {
 
@@ -15,7 +16,7 @@ public class AddTagCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, String @NotNull [] args) {
         if (cmd.getName().equalsIgnoreCase("tagadd")) {
             if (args.length == 2) {
                 String username = args[0];
@@ -27,7 +28,7 @@ public class AddTagCommand implements CommandExecutor {
                             sender.getName() + " sent command " + cmd.getName() + " for player " + player.getName()
                                     + " and tag " + tagId);
                     String uuid = player.getUniqueId().toString();
-                    TagsDatabase db = TagsDatabase.getInstance();
+                    OwnedTagsDao db = OwnedTagsDao.getInstance();
                     boolean result = db.giveUserTag(uuid, tagId);
                     if (result) {
                         CustomTags.getMyLogger()

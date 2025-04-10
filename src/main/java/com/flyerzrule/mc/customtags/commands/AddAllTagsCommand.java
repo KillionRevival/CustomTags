@@ -1,8 +1,8 @@
 package com.flyerzrule.mc.customtags.commands;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import com.flyerzrule.mc.customtags.database.OwnedTagsDao;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,9 +11,9 @@ import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.customtags.CustomTags;
 import com.flyerzrule.mc.customtags.config.TagsConfig;
-import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.models.Tag;
 import com.flyerzrule.mc.customtags.utils.Utils;
+import org.jetbrains.annotations.NotNull;
 
 public class AddAllTagsCommand implements CommandExecutor {
 
@@ -21,7 +21,7 @@ public class AddAllTagsCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, String @NotNull [] args) {
         if (cmd.getName().equalsIgnoreCase("tagaddall")) {
             if (args.length == 1) {
                 String username = args[0];
@@ -31,14 +31,14 @@ public class AddAllTagsCommand implements CommandExecutor {
                     CustomTags.getMyLogger().sendDebug(
                             sender.getName() + " sent command " + cmd.getName() + " for player " + player.getName());
                     String uuid = player.getUniqueId().toString();
-                    TagsDatabase db = TagsDatabase.getInstance();
+                    OwnedTagsDao db = OwnedTagsDao.getInstance();
                     TagsConfig tagsConfig = TagsConfig.getInstance();
 
                     List<Tag> allTags = tagsConfig.getTags();
                     List<Tag> ownedTags = db.getUserOwnedTags(uuid);
 
                     List<String> diffTagIds = Utils.getDifferenceTags(allTags, ownedTags).stream()
-                            .map(ele -> ele.getId()).collect(Collectors.toList());
+                            .map(Tag::getId).toList();
 
                     boolean result = true;
 

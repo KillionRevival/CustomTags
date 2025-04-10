@@ -7,6 +7,9 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 
+import co.killionrevival.killioncommons.KillionUtilities;
+import co.killionrevival.killioncommons.util.console.ConsoleUtil;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -31,8 +34,6 @@ import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import com.flyerzrule.mc.customtags.listeners.ChatListener;
 import com.flyerzrule.mc.customtags.listeners.GroupListener;
 
-import co.killionrevival.killioncommons.KillionCommonsApi;
-import co.killionrevival.killioncommons.util.ConsoleUtil;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.milkbowl.vault.chat.Chat;
@@ -42,24 +43,33 @@ import xyz.xenondevs.invui.gui.structure.Structure;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
 public class CustomTags extends JavaPlugin implements CustomTagsAPI {
-    private File configFile = new File(getDataFolder(), "tags.json");
-    private static JavaPlugin plugin = null;
-    private static Permission perms = null;
-    private static Chat chat = null;
+    private final File configFile = new File(getDataFolder(), "tags.json");
+
+    @Getter
+    private static JavaPlugin plugin;
+    @Getter
+    private static Permission perms;
+    @Getter
+    private static Chat chat;
+    @Getter
     private static LuckPerms luckPerms;
-    private static KillionCommonsApi api;
-    private static ConsoleUtil logger;
-    private static SimpleClans sc;
+    @Getter
+    private static KillionUtilities killionUtilities;
+    @Getter
+    private static ConsoleUtil myLogger;
+    @Getter
+    private static SimpleClans simpleClans;
+    @Getter
     private static IReincarcerationAPI rcApi;
 
     @Override
     public void onEnable() {
         plugin = this;
 
-        api = new KillionCommonsApi(plugin);
-        logger = api.getConsoleUtil();
+        killionUtilities = new KillionUtilities(this);
+        myLogger = killionUtilities.getConsoleUtil();
 
-        sc = (SimpleClans) Objects.requireNonNull(getServer().getPluginManager().getPlugin("SimpleClans"));
+        simpleClans = (SimpleClans) Objects.requireNonNull(getServer().getPluginManager().getPlugin("SimpleClans"));
 
         ensureDataFolderExists();
         ensureTagsConfigExists();
@@ -81,7 +91,7 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
         registerListeners();
         registerAPI();
 
-        logger.sendInfo("CustomTags has been enabled!");
+        myLogger.sendInfo("CustomTags has been enabled!");
     }
 
     @Override
@@ -91,42 +101,10 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
             try {
                 db.closeConnection();
             } catch (Exception e) {
-                logger.sendError("Failed to close connection to Database!");
+                myLogger.sendError("Failed to close connection to Database!");
             }
         }
-        logger.sendInfo("CustomTags has been disabled!");
-    }
-
-    public static JavaPlugin getPlugin() {
-        return plugin;
-    }
-
-    public static Chat getChat() {
-        return chat;
-    }
-
-    public static Permission getPermission() {
-        return perms;
-    }
-
-    public static LuckPerms getLuckPerms() {
-        return luckPerms;
-    }
-
-    public static KillionCommonsApi getApi() {
-        return api;
-    }
-
-    public static ConsoleUtil getMyLogger() {
-        return logger;
-    }
-
-    public static SimpleClans getSimpleClans() {
-        return sc;
-    }
-
-    public static IReincarcerationAPI getReincarcerationAPI() {
-        return rcApi;
+        myLogger.sendInfo("CustomTags has been disabled!");
     }
 
     private boolean setupPermissions() {
@@ -171,11 +149,11 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
                 if (in != null) {
                     Files.copy(in, configFile.toPath());
                 } else {
-                    logger.sendError("Default tags.json not found in resources!");
+                    myLogger.sendError("Default tags.json not found in resources!");
                 }
             } catch (IOException e) {
-                logger.sendError("Error creating tags.json file!");
-                logger.sendError(e.getMessage());
+                myLogger.sendError("Error creating tags.json file!");
+                myLogger.sendError(e.getMessage());
             }
         }
     }
