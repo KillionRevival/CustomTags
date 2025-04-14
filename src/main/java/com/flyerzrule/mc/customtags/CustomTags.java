@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import co.killionrevival.killioncommons.KillionUtilities;
 import co.killionrevival.killioncommons.util.console.ConsoleUtil;
+import com.earth2me.essentials.Essentials;
 import com.flyerzrule.mc.customtags.database.TagsDatabase;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -52,6 +53,7 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
     private static ConsoleUtil logger;
     private static SimpleClans sc;
     private static IReincarcerationAPI rcApi;
+    private static Essentials essentials;
 
     @Override
     public void onEnable() {
@@ -61,6 +63,8 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
         logger = util.getConsoleUtil();
 
         sc = (SimpleClans) Objects.requireNonNull(getServer().getPluginManager().getPlugin("SimpleClans"));
+
+        essentials = (Essentials) Objects.requireNonNull(getServer().getPluginManager().getPlugin("Essentials"));
 
         ensureDataFolderExists();
         ensureTagsConfigExists();
@@ -128,6 +132,10 @@ public class CustomTags extends JavaPlugin implements CustomTagsAPI {
 
     public static IReincarcerationAPI getReincarcerationAPI() {
         return rcApi;
+    }
+
+    public static Essentials getEssentials() {
+        return essentials;
     }
 
     private boolean setupPermissions() {

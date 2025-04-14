@@ -3,6 +3,10 @@ package com.flyerzrule.mc.customtags.listeners;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import com.flyerzrule.mc.customtags.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,11 +22,6 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.cacheddata.CachedMetaData;
 import net.luckperms.api.model.user.User;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
@@ -52,81 +51,67 @@ public class ChatListener implements Listener {
         CompletableFuture<User> userFuture = CustomTags.getLuckPerms().getUserManager().loadUser(player.getUniqueId());
         User user = userFuture.join();
 
-        // Get Premium name color
-        String playerColor = "";
-        String messageColor = "";
-
         CachedMetaData userMetaData = user.getCachedData().getMetaData();
-        if (userMetaData != null) {
-            playerColor = Objects.requireNonNullElse(userMetaData.getMetaValue("username-color"),
-                    "");
-            messageColor = Objects.requireNonNullElse(userMetaData.getMetaValue("message-color"),
-                    "");
-        }
+        String playerColor = Objects.requireNonNullElse(userMetaData.getMetaValue("username-color"),
+                "");
+        String messageColor = Objects.requireNonNullElse(userMetaData.getMetaValue("message-color"),
+                "");
 
-        playerColor = playerColor.replace('&', '§');
-        messageColor = messageColor.replace('&', '§');
+        NamedTextColor namedPlayerColor = Utils.getColorFromTag(playerColor);
+        NamedTextColor namedMessageColor = Utils.getColorFromTag(messageColor);
 
         TagsDao db = TagsDao.getInstance();
         Tag selectedTag = db.getSelectedForUser(player.getUniqueId().toString());
 
-        // Create the prefix component
-        TextComponent prefixComponent = new TextComponent(" " + prefix.replace('&', '§'));
+        // Rank
+        Component rank = LegacyComponentSerializer.legacyAmpersand().deserialize(prefix);
 
-        // Create tag hover text component
-        TextComponent tagComponent = null;
+        // Username
+        Component username = Component.text(player.getName()).color(namedPlayerColor);
+
+        // Message
+        Component originalMessage = event.message().color(namedMessageColor);
+
+        // Tag
+        Component tag = Component.empty();
         if (selectedTag != null) {
-            String tagHoverContent = String.format("%s\n%s\n%s", selectedTag.getName(), selectedTag.getDescription(),
-                    (selectedTag.getObtainable() == true) ? "§aObtainable" : "§4Not-Obtainable");
-
-            tagComponent = new TextComponent(selectedTag.getTag());
-            tagComponent
-                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(tagHoverContent)));
+            tag = LegacyComponentSerializer.legacyAmpersand().deserialize(selectedTag.getTag())
+                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text(selectedTag.getDescription())));
         }
 
-        // Create the username component
-        String nameWithNickname = LegacyComponentSerializer.legacySection().serialize(player.displayName());
-        String username;
-        if (nameWithNickname.contains("~")) {
-            username = nameWithNickname.split("~")[1];
-        } else {
-            username = player.getName();
-        }
-        TextComponent usernameComponent = new TextComponent(playerColor + username + "§r");
-        usernameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
-
-        // Create the message component
-        TextComponent messageComponent = new TextComponent(
-                messageColor + LegacyComponentSerializer.legacySection().serialize(event.message()) + "§r");
-        messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§r")));
-
-        // Combine prefix, hoverable tag, and message
-        BaseComponent[] baseComponents;
+        // Combine all components
+        Component fullMessage;
         if (selectedTag != null) {
-            baseComponents = new ComponentBuilder("")
-                    .append(prefixComponent)
-                    .append(" ")
-                    .append(tagComponent)
-                    .append(" ")
-                    .append(usernameComponent)
-                    .append("§8: §r")
-                    .append(messageComponent)
-                    .create();
+            fullMessage = Component.empty()
+                .appendSpace()
+                .append(rank)
+                .appendSpace()
+                .append(tag)
+                .appendSpace()
+                .append(username)
+                .append(Component.text(":", NamedTextColor.DARK_GRAY))
+                .appendSpace()
+                .append(originalMessage);
         } else {
-            baseComponents = new ComponentBuilder("")
-                    .append(prefixComponent)
-                    .append(" ")
-                    .append(usernameComponent)
-                    .append("§8: §r")
-                    .append(messageComponent)
-                    .create();
+            fullMessage = Component.empty()
+                .appendSpace()
+                .append(rank)
+                .appendSpace()
+                .append(username)
+                .append(Component.text(":", NamedTextColor.DARK_GRAY))
+                .appendSpace()
+                .append(originalMessage);
         }
 
-        // Cancel the original event and send the new formatted message
+
         event.setCancelled(true);
-        Bukkit.getServer().getConsoleSender().sendMessage(baseComponents);
-        for (Player p : CustomTags.getPlugin().getServer().getOnlinePlayers()) {
-            p.sendMessage(baseComponents);
+
+        Bukkit.getConsoleSender().sendMessage(LegacyComponentSerializer.legacySection().serialize(fullMessage));
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (Utils.isPlayerIgnored(player, p)) {
+                continue;
+            }
+            p.sendMessage(fullMessage);
         }
     }
 }
