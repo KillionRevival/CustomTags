@@ -8,27 +8,35 @@ permissions:
   contents: write
   packages: write
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+          settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-      - name: Build with Gradle
-        uses: KillionRevival/gradle-builder-action@v1
-        id: build-step
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3.5.0
+
+      - name: Build Project
+        id: build
+        uses: KillionRevival/gradle-builder-action@v2
         with:
           token: ${{ secrets.PAT }}
+          java-version: "21"
 
       - name: Upload Release Asset
         id: release
-        uses: KillionRevival/release-action@v1
+        uses: KillionRevival/release-action@v2
         with:
-          jar-path: ${{ steps.build-step.outputs.jar-path }}
+          jar-path: ${{ steps.build.outputs.jar-path }}
 
       - name: Deploy to package repo
         id: deploy
         uses: KillionRevival/gradle-deploy-action@v1
+        with:
+          java-version: "21"
         
