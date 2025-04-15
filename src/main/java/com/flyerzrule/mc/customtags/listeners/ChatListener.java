@@ -83,8 +83,16 @@ public class ChatListener implements Listener {
         // Tag
         Component tag = Component.empty();
         if (selectedTag != null) {
+            Component tagHover = Component.empty()
+                    .append(Component.text(selectedTag.getName()))
+                    .appendNewline()
+                    .append(Component.text(selectedTag.getDescription()))
+                    .appendNewline()
+                    .append((selectedTag.getObtainable()) ?
+                            Component.text("Obtainable").color(NamedTextColor.GREEN) :
+                            Component.text("Not-Obtainable").color(NamedTextColor.DARK_RED));
             tag = LegacyComponentSerializer.legacyAmpersand().deserialize(selectedTag.getTag())
-                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text(selectedTag.getDescription())));
+                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, tagHover));
         }
 
         // Combine all components
