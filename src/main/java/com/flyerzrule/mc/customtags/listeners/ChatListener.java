@@ -67,7 +67,15 @@ public class ChatListener implements Listener {
         Component rank = LegacyComponentSerializer.legacyAmpersand().deserialize(prefix);
 
         // Username
-        Component username = Component.text(player.getName()).color(namedPlayerColor);
+        String nameWithNickname = LegacyComponentSerializer.legacySection().serialize(player.displayName());
+        String playerUsername;
+
+        if (nameWithNickname.contains("~")) {
+            playerUsername = nameWithNickname.split("~")[1];
+        } else {
+            playerUsername = player.getName();
+        }
+        Component username = Component.text(playerUsername).color(namedPlayerColor);
 
         // Message
         Component originalMessage = event.message().color(namedMessageColor);
